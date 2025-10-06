@@ -208,7 +208,7 @@ const Historico = {
   parseSecoes(textoCompleto) {
     console.log('🔍 Iniciando parse de seções...');
     console.log('📏 Tamanho do texto:', textoCompleto.length);
-    
+
     const secoes = {};
     const numerosRomanos = [
       'I',
@@ -240,8 +240,11 @@ const Historico = {
       const matchInicio = textoCompleto.match(regexInicio);
 
       if (matchInicio) {
-        console.log(`✅ Seção ${secaoAtual} encontrada:`, matchInicio[0].substring(0, 50) + '...');
-        
+        console.log(
+          `✅ Seção ${secaoAtual} encontrada:`,
+          matchInicio[0].substring(0, 50) + '...'
+        );
+
         const posInicio = textoCompleto.indexOf(matchInicio[0]);
         const posFimTitulo = posInicio + matchInicio[0].length;
 
@@ -275,7 +278,9 @@ const Historico = {
           secoes[secaoAtual] = conteudo;
           console.log(`  📝 Conteúdo: ${conteudo.length} caracteres`);
         } else {
-          console.warn(`  ⚠️ Seção ${secaoAtual} com conteúdo muito pequeno: ${conteudo.length} chars`);
+          console.warn(
+            `  ⚠️ Seção ${secaoAtual} com conteúdo muito pequeno: ${conteudo.length} chars`
+          );
         }
       } else {
         console.warn(`❌ Seção ${secaoAtual} NÃO encontrada no texto`);
@@ -347,7 +352,7 @@ const Historico = {
       item.addEventListener('click', e => {
         // Não recarrega se clicou no botão excluir
         if (e.target.classList.contains('btn-excluir-etp')) return;
-        
+
         const index = parseInt(e.currentTarget.dataset.index);
         this.loadConfig(historico[index]);
       });
@@ -361,13 +366,13 @@ const Historico = {
         this.showResposta(historico[index]);
       });
     });
-    
+
     // Event listeners para excluir
     document.querySelectorAll('.btn-excluir-etp').forEach(btn => {
       btn.addEventListener('click', async e => {
         e.stopPropagation();
         const index = parseInt(e.currentTarget.dataset.index);
-        
+
         if (confirm('Tem certeza que deseja excluir este ETP do histórico?')) {
           await this.delete(index);
         }
@@ -681,6 +686,7 @@ const ProgressBar = {
     const fill = document.getElementById('progressFill');
     if (fill) {
       fill.style.width = `${percent}%`;
+      fill.setAttribute('data-progress', `${percent}%`);
     }
   },
 };
@@ -1319,12 +1325,18 @@ const EventHandlers = {
         Utils.showStatus('Organizando resposta por seções...');
         config.resposta = respostaResult.text;
         config.secoes = Historico.parseSecoes(respostaResult.text);
-        
+
         // Log de debug
         console.log('📊 Seções parseadas:', Object.keys(config.secoes).length);
-        console.log('📝 Seções encontradas:', Object.keys(config.secoes).join(', '));
+        console.log(
+          '📝 Seções encontradas:',
+          Object.keys(config.secoes).join(', ')
+        );
       } else {
-        console.warn('⚠️ Não foi possível capturar a resposta:', respostaResult.error);
+        console.warn(
+          '⚠️ Não foi possível capturar a resposta:',
+          respostaResult.error
+        );
       }
 
       ProgressBar.setProgress(95);
