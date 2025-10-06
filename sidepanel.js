@@ -132,59 +132,91 @@ const Historico = {
           // Aguarda a resposta aparecer
           return new Promise(resolve => {
             let attempts = 0;
-            const maxAttempts = 120; // 60 segundos (ChatGPT pode demorar)
+            const maxAttempts = 240; // 120 segundos (ChatGPT pode demorar muito)
+            let lastTextLength = 0;
+            let stableCount = 0;
 
             const checkForResponse = setInterval(() => {
               attempts++;
 
               // Procura pela última resposta do assistente
               const articles = document.querySelectorAll('article');
+              if (articles.length === 0) return;
+              
               const lastArticle = articles[articles.length - 1];
+              if (!lastArticle) return;
+              
+              const text = lastArticle.textContent;
+              const currentLength = text.length;
 
-              if (lastArticle && lastArticle.textContent.length > 100) {
-                const text = lastArticle.textContent;
+              // Verifica se tem conteúdo mínimo
+              if (currentLength > 500) {
+                // Verifica se a resposta está completa
+                // Procura por seções (pelo menos 5 seções diferentes)
+                const secoesEncontradas = [];
+                ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII'].forEach(num => {
+                  const regex = new RegExp(`\\b${num}\\s*[-–—]`, 'i');
+                  if (regex.test(text)) {
+                    secoesEncontradas.push(num);
+                  }
+                });
 
-                // Verifica se a resposta está completa (procura pela última seção)
-                if (
-                  text.includes('XIII') &&
-                  text.includes('posicionamento conclusivo')
-                ) {
-                  clearInterval(checkForResponse);
+                console.log(`🔍 Tentativa ${attempts}: ${currentLength} chars, ${secoesEncontradas.length} seções`);
 
-                  console.log('✅ Resposta completa capturada!');
-                  console.log('📏 Tamanho:', text.length, 'caracteres');
-
-                  // Extrai o texto formatado, preservando quebras de linha
-                  const paragraphs = lastArticle.querySelectorAll(
-                    'p, div[class*="markdown"]'
-                  );
-                  let formattedText = '';
-
-                  if (paragraphs.length > 0) {
-                    // Usa paragraphs se encontrar
-                    paragraphs.forEach(p => {
-                      const pText = p.textContent.trim();
-                      if (pText) {
-                        formattedText += pText + '\n\n';
-                      }
-                    });
+                // Se encontrou pelo menos 10 seções E o texto parou de crescer
+                if (secoesEncontradas.length >= 10) {
+                  // Verifica se texto está estável (não está mais crescendo)
+                  if (currentLength === lastTextLength) {
+                    stableCount++;
                   } else {
-                    // Fallback: usa textContent direto
-                    formattedText = text;
+                    stableCount = 0;
+                    lastTextLength = currentLength;
                   }
 
-                  resolve({ success: true, text: formattedText.trim() });
-                  return;
+                  // Se ficou estável por 4 verificações (2 segundos), considera completo
+                  if (stableCount >= 4) {
+                    clearInterval(checkForResponse);
+
+                    console.log('✅ Resposta completa capturada!');
+                    console.log('📏 Tamanho:', text.length, 'caracteres');
+                    console.log('📊 Seções encontradas:', secoesEncontradas.join(', '));
+
+                    // Extrai o texto formatado
+                    const paragraphs = lastArticle.querySelectorAll('p, div[class*="markdown"]');
+                    let formattedText = '';
+
+                    if (paragraphs.length > 0) {
+                      paragraphs.forEach(p => {
+                        const pText = p.textContent.trim();
+                        if (pText && !pText.startsWith('Copy code')) {
+                          formattedText += pText + '\n\n';
+                        }
+                      });
+                    } else {
+                      formattedText = text;
+                    }
+
+                    resolve({ success: true, text: formattedText.trim() });
+                    return;
+                  }
                 }
               }
 
               if (attempts >= maxAttempts) {
                 clearInterval(checkForResponse);
-                console.warn('⏱️ Timeout ao aguardar resposta completa');
-                resolve({
-                  success: false,
-                  error: 'Timeout ao aguardar resposta',
-                });
+                console.warn('⏱️ Timeout: 120 segundos atingidos');
+                console.warn('📊 Último status:', currentLength, 'chars,', secoesEncontradas?.length || 0, 'seções');
+                
+                // Se tiver pelo menos algum conteúdo, retorna mesmo com timeout
+                if (currentLength > 500) {
+                  console.log('⚠️ Retornando resposta parcial');
+                  resolve({ success: true, text: text, partial: true });
+                } else {
+                  resolve({
+                    success: false,
+                    error: 'Timeout ao aguardar resposta',
+                  });
+                }
               }
             }, 500);
           });
