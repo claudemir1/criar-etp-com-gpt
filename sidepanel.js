@@ -142,10 +142,10 @@ const Historico = {
               // Procura pela última resposta do assistente
               const articles = document.querySelectorAll('article');
               if (articles.length === 0) return;
-              
+
               const lastArticle = articles[articles.length - 1];
               if (!lastArticle) return;
-              
+
               const text = lastArticle.textContent;
               const currentLength = text.length;
 
@@ -154,14 +154,30 @@ const Historico = {
                 // Verifica se a resposta está completa
                 // Procura por seções (pelo menos 5 seções diferentes)
                 const secoesEncontradas = [];
-                ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII'].forEach(num => {
+                [
+                  'I',
+                  'II',
+                  'III',
+                  'IV',
+                  'V',
+                  'VI',
+                  'VII',
+                  'VIII',
+                  'IX',
+                  'X',
+                  'XI',
+                  'XII',
+                  'XIII',
+                ].forEach(num => {
                   const regex = new RegExp(`\\b${num}\\s*[-–—]`, 'i');
                   if (regex.test(text)) {
                     secoesEncontradas.push(num);
                   }
                 });
 
-                console.log(`🔍 Tentativa ${attempts}: ${currentLength} chars, ${secoesEncontradas.length} seções`);
+                console.log(
+                  `🔍 Tentativa ${attempts}: ${currentLength} chars, ${secoesEncontradas.length} seções`
+                );
 
                 // Se encontrou pelo menos 10 seções E o texto parou de crescer
                 if (secoesEncontradas.length >= 10) {
@@ -179,10 +195,15 @@ const Historico = {
 
                     console.log('✅ Resposta completa capturada!');
                     console.log('📏 Tamanho:', text.length, 'caracteres');
-                    console.log('📊 Seções encontradas:', secoesEncontradas.join(', '));
+                    console.log(
+                      '📊 Seções encontradas:',
+                      secoesEncontradas.join(', ')
+                    );
 
                     // Extrai o texto formatado
-                    const paragraphs = lastArticle.querySelectorAll('p, div[class*="markdown"]');
+                    const paragraphs = lastArticle.querySelectorAll(
+                      'p, div[class*="markdown"]'
+                    );
                     let formattedText = '';
 
                     if (paragraphs.length > 0) {
@@ -205,8 +226,14 @@ const Historico = {
               if (attempts >= maxAttempts) {
                 clearInterval(checkForResponse);
                 console.warn('⏱️ Timeout: 120 segundos atingidos');
-                console.warn('📊 Último status:', currentLength, 'chars,', secoesEncontradas?.length || 0, 'seções');
-                
+                console.warn(
+                  '📊 Último status:',
+                  currentLength,
+                  'chars,',
+                  secoesEncontradas?.length || 0,
+                  'seções'
+                );
+
                 // Se tiver pelo menos algum conteúdo, retorna mesmo com timeout
                 if (currentLength > 500) {
                   console.log('⚠️ Retornando resposta parcial');
@@ -694,34 +721,7 @@ const Badges = {
   },
 };
 
-// ========================================
-// PROGRESS BAR
-// ========================================
-const ProgressBar = {
-  show() {
-    const container = document.getElementById('progressContainer');
-    if (container) {
-      container.style.display = 'block';
-      this.setProgress(0);
-    }
-  },
-
-  hide() {
-    const container = document.getElementById('progressContainer');
-    if (container) {
-      container.style.display = 'none';
-      this.setProgress(0);
-    }
-  },
-
-  setProgress(percent) {
-    const fill = document.getElementById('progressFill');
-    if (fill) {
-      fill.style.width = `${percent}%`;
-      fill.setAttribute('data-progress', `${percent}%`);
-    }
-  },
-};
+// Progress Bar removida - usando apenas spinner + status text
 
 // ========================================
 // UTILITÁRIOS
@@ -1286,8 +1286,6 @@ const EventHandlers = {
 
     try {
       state.isProcessing = true;
-      ProgressBar.show();
-      ProgressBar.setProgress(10);
       Utils.showStatus('Conectando ao ChatGPT...');
 
       // Coleta dados do formulário
@@ -1314,8 +1312,6 @@ const EventHandlers = {
         locacao,
       };
 
-      ProgressBar.setProgress(25);
-
       // Gera o prompt
       const promptText = Utils.generatePrompt(
         paragr,
@@ -1325,32 +1321,22 @@ const EventHandlers = {
         locacao
       );
 
-      ProgressBar.setProgress(40);
-
       // Obtém a aba do ChatGPT
       Utils.showStatus('Preparando prompt...');
       const tabId = await ChatGPT.getCurrentChatGPTTab();
       state.currentTabId = tabId;
 
-      ProgressBar.setProgress(50);
-
       // Delay maior para garantir que a página carregou completamente
       Utils.showStatus('Aguardando página carregar...');
       await new Promise(resolve => setTimeout(resolve, 3000));
-
-      ProgressBar.setProgress(60);
 
       // Envia o prompt
       Utils.showStatus('Enviando para o ChatGPT...');
       await ChatGPT.sendPrompt(tabId, promptText);
 
-      ProgressBar.setProgress(70);
-
       // Aguarda e captura a resposta
-      Utils.showStatus('Aguardando resposta do ChatGPT...');
+      Utils.showStatus('Aguardando resposta do ChatGPT... (pode demorar 1-2 min)');
       const respostaResult = await Historico.captureResponse(tabId);
-
-      ProgressBar.setProgress(85);
 
       // Parseia as seções se capturou a resposta
       if (respostaResult.success && respostaResult.text) {
@@ -1371,12 +1357,9 @@ const EventHandlers = {
         );
       }
 
-      ProgressBar.setProgress(95);
-
       // Salva no histórico
+      Utils.showStatus('Salvando no histórico...');
       await Historico.save(config);
-
-      ProgressBar.setProgress(100);
 
       Utils.showStatus('ETP gerado com sucesso! 🎉');
 
@@ -1389,12 +1372,10 @@ const EventHandlers = {
 
       setTimeout(() => {
         Utils.hideStatus();
-        ProgressBar.hide();
       }, 3000);
     } catch (error) {
       console.error('Erro ao gerar ETP:', error);
       Utils.showStatus('Erro: ' + error.message, true);
-      ProgressBar.hide();
       setTimeout(() => {
         Utils.hideStatus();
       }, 5000);
