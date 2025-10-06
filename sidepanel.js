@@ -105,6 +105,8 @@ const Historico = {
         previsao: item.previsao,
         locacao: item.locacao,
         date: new Date().toISOString(),
+        resposta: item.resposta || null, // Resposta do ChatGPT
+        secoes: item.secoes || null, // Seções parseadas
       });
 
       // Mantém apenas os últimos CONFIG.MAX_HISTORY itens
@@ -117,6 +119,171 @@ const Historico = {
     } catch (error) {
       console.error('Erro ao salvar histórico:', error);
     }
+  },
+
+  /**
+   * Captura a resposta do ChatGPT
+   */
+  async captureResponse(tabId) {
+    try {
+      const results = await chrome.scripting.executeScript({
+        target: { tabId },
+        func: function () {
+          // Aguarda a resposta aparecer
+          return new Promise(resolve => {
+            let attempts = 0;
+            const maxAttempts = 120; // 60 segundos (ChatGPT pode demorar)
+
+            const checkForResponse = setInterval(() => {
+              attempts++;
+
+              // Procura pela última resposta do assistente
+              const articles = document.querySelectorAll('article');
+              const lastArticle = articles[articles.length - 1];
+
+              if (lastArticle && lastArticle.textContent.length > 100) {
+                const text = lastArticle.textContent;
+
+                // Verifica se a resposta está completa (procura pela última seção)
+                if (
+                  text.includes('XIII') &&
+                  text.includes('posicionamento conclusivo')
+                ) {
+                  clearInterval(checkForResponse);
+
+                  console.log('✅ Resposta completa capturada!');
+                  console.log('📏 Tamanho:', text.length, 'caracteres');
+
+                  // Extrai o texto formatado, preservando quebras de linha
+                  const paragraphs = lastArticle.querySelectorAll(
+                    'p, div[class*="markdown"]'
+                  );
+                  let formattedText = '';
+
+                  if (paragraphs.length > 0) {
+                    // Usa paragraphs se encontrar
+                    paragraphs.forEach(p => {
+                      const pText = p.textContent.trim();
+                      if (pText) {
+                        formattedText += pText + '\n\n';
+                      }
+                    });
+                  } else {
+                    // Fallback: usa textContent direto
+                    formattedText = text;
+                  }
+
+                  resolve({ success: true, text: formattedText.trim() });
+                  return;
+                }
+              }
+
+              if (attempts >= maxAttempts) {
+                clearInterval(checkForResponse);
+                console.warn('⏱️ Timeout ao aguardar resposta completa');
+                resolve({
+                  success: false,
+                  error: 'Timeout ao aguardar resposta',
+                });
+              }
+            }, 500);
+          });
+        },
+      });
+
+      if (results && results[0] && results[0].result) {
+        return results[0].result;
+      }
+
+      return { success: false, error: 'Nenhum resultado retornado' };
+    } catch (error) {
+      console.error('Erro ao capturar resposta:', error);
+      return { success: false, error: error.message };
+    }
+  },
+
+  /**
+   * Parseia a resposta em seções
+   */
+  parseSecoes(textoCompleto) {
+    console.log('🔍 Iniciando parse de seções...');
+    console.log('📏 Tamanho do texto:', textoCompleto.length);
+    
+    const secoes = {};
+    const numerosRomanos = [
+      'I',
+      'II',
+      'III',
+      'IV',
+      'V',
+      'VI',
+      'VII',
+      'VIII',
+      'IX',
+      'X',
+      'XI',
+      'XII',
+      'XIII',
+    ];
+
+    // Tenta extrair cada seção
+    for (let i = 0; i < numerosRomanos.length; i++) {
+      const secaoAtual = numerosRomanos[i];
+      const secaoProxima = i < 12 ? numerosRomanos[i + 1] : null;
+
+      // Regex mais robusto para encontrar a seção
+      // Procura: "I - " ou "I-" ou "I –" seguido de texto
+      const regexInicio = new RegExp(
+        `^\\s*${secaoAtual}\\s*[-–—]\\s*[^\\n]+`,
+        'im'
+      );
+      const matchInicio = textoCompleto.match(regexInicio);
+
+      if (matchInicio) {
+        console.log(`✅ Seção ${secaoAtual} encontrada:`, matchInicio[0].substring(0, 50) + '...');
+        
+        const posInicio = textoCompleto.indexOf(matchInicio[0]);
+        const posFimTitulo = posInicio + matchInicio[0].length;
+
+        let conteudo = '';
+
+        if (secaoProxima) {
+          // Procura próxima seção
+          const regexFim = new RegExp(`^\\s*${secaoProxima}\\s*[-–—]`, 'im');
+          const matchFim = textoCompleto
+            .substring(posFimTitulo)
+            .match(regexFim);
+
+          if (matchFim) {
+            const posFim =
+              posFimTitulo +
+              textoCompleto.substring(posFimTitulo).indexOf(matchFim[0]);
+            conteudo = textoCompleto.substring(posFimTitulo, posFim).trim();
+          } else {
+            conteudo = textoCompleto.substring(posFimTitulo).trim();
+          }
+        } else {
+          // Última seção (XIII)
+          conteudo = textoCompleto.substring(posFimTitulo).trim();
+        }
+
+        // Remove possíveis linhas vazias do início e fim
+        conteudo = conteudo.replace(/^\s+|\s+$/g, '').trim();
+
+        // Só salva se tiver conteúdo real (mais de 10 caracteres)
+        if (conteudo.length > 10) {
+          secoes[secaoAtual] = conteudo;
+          console.log(`  📝 Conteúdo: ${conteudo.length} caracteres`);
+        } else {
+          console.warn(`  ⚠️ Seção ${secaoAtual} com conteúdo muito pequeno: ${conteudo.length} chars`);
+        }
+      } else {
+        console.warn(`❌ Seção ${secaoAtual} NÃO encontrada no texto`);
+      }
+    }
+
+    console.log('✅ Parse concluído:', Object.keys(secoes).length, 'seções');
+    return secoes;
   },
 
   async render() {
@@ -146,22 +313,244 @@ const Historico = {
           item.contexto.substring(0, 50) +
           (item.contexto.length > 50 ? '...' : '');
 
+        const temResposta = item.secoes && Object.keys(item.secoes).length > 0;
+
         return `
-        <div class="historico-item" data-index="${index}">
-          <div class="historico-item-desc">${preview}</div>
-          <div class="historico-item-date">📅 ${dateStr}</div>
+        <div class="historico-item-wrapper">
+          <div class="historico-item" data-index="${index}">
+            <div class="historico-item-header">
+              <div class="historico-item-info">
+                <div class="historico-item-desc">${preview}</div>
+                <div class="historico-item-date">📅 ${dateStr}</div>
+              </div>
+              <button class="btn-excluir-etp" data-index="${index}" title="Excluir ETP">
+                🗑️
+              </button>
+            </div>
+          </div>
+          ${
+            temResposta
+              ? `
+            <button class="btn-ver-resposta" data-index="${index}">
+              📋 Ver Resposta Completa
+            </button>
+          `
+              : ''
+          }
         </div>
       `;
       })
       .join('');
 
-    // Adiciona event listeners
+    // Event listeners para recarregar config
     document.querySelectorAll('.historico-item').forEach(item => {
       item.addEventListener('click', e => {
+        // Não recarrega se clicou no botão excluir
+        if (e.target.classList.contains('btn-excluir-etp')) return;
+        
         const index = parseInt(e.currentTarget.dataset.index);
         this.loadConfig(historico[index]);
       });
     });
+
+    // Event listeners para ver resposta
+    document.querySelectorAll('.btn-ver-resposta').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        const index = parseInt(e.currentTarget.dataset.index);
+        this.showResposta(historico[index]);
+      });
+    });
+    
+    // Event listeners para excluir
+    document.querySelectorAll('.btn-excluir-etp').forEach(btn => {
+      btn.addEventListener('click', async e => {
+        e.stopPropagation();
+        const index = parseInt(e.currentTarget.dataset.index);
+        
+        if (confirm('Tem certeza que deseja excluir este ETP do histórico?')) {
+          await this.delete(index);
+        }
+      });
+    });
+  },
+
+  /**
+   * Exclui um item do histórico
+   */
+  async delete(index) {
+    try {
+      let historico = await this.load();
+      historico.splice(index, 1);
+      await chrome.storage.local.set({ historico });
+      this.render();
+    } catch (error) {
+      console.error('Erro ao excluir item:', error);
+    }
+  },
+
+  /**
+   * Mostra modal com a resposta organizada por seções
+   */
+  showResposta(item) {
+    if (!item.secoes) return;
+
+    const modal =
+      document.getElementById('respostaModal') || this.createModal();
+    const content = document.getElementById('respostaContent');
+
+    // Títulos completos das seções
+    const tituloCompleto = {
+      I: 'I - Descrição da Necessidade da Contratação',
+      II: 'II - Demonstração da Previsão no PCA',
+      III: 'III - Requisitos da Contratação',
+      IV: 'IV - Estimativas das Quantidades',
+      V: 'V - Levantamento de Mercado',
+      VI: 'VI - Estimativa do Valor da Contratação',
+      VII: 'VII - Descrição da Solução',
+      VIII: 'VIII - Justificativas para o Parcelamento',
+      IX: 'IX - Demonstrativo dos Resultados Pretendidos',
+      X: 'X - Providências a Serem Adotadas',
+      XI: 'XI - Contratações Correlatas e/ou Interdependentes',
+      XII: 'XII - Descrição de Possíveis Impactos Ambientais',
+      XIII: 'XIII - Posicionamento Conclusivo',
+    };
+
+    const secoesHtml = Object.keys(item.secoes)
+      .sort()
+      .map(secao => {
+        const titulo = tituloCompleto[secao] || secao;
+        const conteudo = item.secoes[secao];
+
+        return `
+          <div class="secao-item">
+            <div class="secao-header">
+              <h3>${titulo}</h3>
+              <button class="btn-copiar-secao" data-secao="${secao}">
+                📋 Copiar
+              </button>
+            </div>
+            <div class="secao-conteudo" id="secao-${secao}">
+              ${conteudo.replace(/\n/g, '<br>')}
+            </div>
+          </div>
+        `;
+      })
+      .join('');
+
+    content.innerHTML = `
+      <div class="modal-header-resposta">
+        <h2>📄 ETP Completo</h2>
+        <div class="modal-meta">
+          <span>📅 ${new Date(item.date).toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+          })}</span>
+          <button class="btn-copiar-tudo">📋 Copiar Tudo</button>
+        </div>
+      </div>
+      <div class="secoes-container">
+        ${secoesHtml}
+      </div>
+    `;
+
+    modal.classList.remove('hidden');
+
+    // Event listeners para copiar
+    content.querySelectorAll('.btn-copiar-secao').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const secao = e.currentTarget.dataset.secao;
+        this.copiarSecao(secao, item.secoes[secao]);
+      });
+    });
+
+    content.querySelector('.btn-copiar-tudo')?.addEventListener('click', () => {
+      this.copiarTudo(item.secoes);
+    });
+  },
+
+  /**
+   * Cria o modal para exibir respostas
+   */
+  createModal() {
+    const modal = document.createElement('div');
+    modal.id = 'respostaModal';
+    modal.className = 'resposta-modal hidden';
+    modal.innerHTML = `
+      <div class="resposta-modal-overlay"></div>
+      <div class="resposta-modal-content">
+        <button class="resposta-modal-close">✕</button>
+        <div id="respostaContent"></div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Event listeners
+    modal
+      .querySelector('.resposta-modal-overlay')
+      .addEventListener('click', () => {
+        modal.classList.add('hidden');
+      });
+
+    modal
+      .querySelector('.resposta-modal-close')
+      .addEventListener('click', () => {
+        modal.classList.add('hidden');
+      });
+
+    return modal;
+  },
+
+  /**
+   * Copia uma seção específica
+   */
+  async copiarSecao(secao, conteudo) {
+    try {
+      await navigator.clipboard.writeText(conteudo);
+      this.showCopyFeedback(secao);
+    } catch (error) {
+      console.error('Erro ao copiar:', error);
+      alert('Erro ao copiar. Tente novamente.');
+    }
+  },
+
+  /**
+   * Copia todas as seções
+   */
+  async copiarTudo(secoes) {
+    try {
+      const textoCompleto = Object.keys(secoes)
+        .sort()
+        .map(secao => secoes[secao])
+        .join('\n\n');
+
+      await navigator.clipboard.writeText(textoCompleto);
+      alert('✅ ETP completo copiado para a área de transferência!');
+    } catch (error) {
+      console.error('Erro ao copiar:', error);
+      alert('Erro ao copiar. Tente novamente.');
+    }
+  },
+
+  /**
+   * Mostra feedback visual ao copiar
+   */
+  showCopyFeedback(secao) {
+    const btn = document.querySelector(`[data-secao="${secao}"]`);
+    if (btn) {
+      const originalText = btn.textContent;
+      btn.textContent = '✅ Copiado!';
+      btn.style.background = '#10b981';
+
+      setTimeout(() => {
+        btn.textContent = originalText;
+        btn.style.background = '';
+      }, 2000);
+    }
   },
 
   loadConfig(config) {
@@ -305,16 +694,16 @@ const Utils = {
    */
   autoResizeTextarea(textarea) {
     if (!textarea) return;
-    
+
     // Se o campo está vazio, define altura mínima
     if (!textarea.value || textarea.value.trim() === '') {
       textarea.style.height = '80px';
       return;
     }
-    
+
     // Reset altura para calcular a altura correta
     textarea.style.height = 'auto';
-    
+
     // Define nova altura baseada no scrollHeight
     const newHeight = Math.min(Math.max(textarea.scrollHeight, 80), 400);
     textarea.style.height = newHeight + 'px';
@@ -790,19 +1179,19 @@ const EventHandlers = {
     // Campo de contexto
     const contextoField = document.getElementById('contexto');
     if (contextoField) {
-      // Define altura inicial pequena (3 linhas)
-      contextoField.style.height = '80px';
-      
+      // Auto-resize inicial
+      Utils.autoResizeTextarea(contextoField);
+
       contextoField.addEventListener('input', e => {
         const limparBtn = document.getElementById('limpar');
         Storage.saveContext(e.target.value);
         if (limparBtn) {
           limparBtn.style.display = e.target.value ? 'block' : 'none';
         }
-        
+
         // Auto-resize ao digitar
         Utils.autoResizeTextarea(e.target);
-        
+
         Utils.updateSubmitButton();
         Badges.update();
       });
@@ -905,17 +1294,38 @@ const EventHandlers = {
       const tabId = await ChatGPT.getCurrentChatGPTTab();
       state.currentTabId = tabId;
 
-      ProgressBar.setProgress(60);
+      ProgressBar.setProgress(50);
 
       // Delay maior para garantir que a página carregou completamente
       Utils.showStatus('Aguardando página carregar...');
       await new Promise(resolve => setTimeout(resolve, 3000));
 
-      ProgressBar.setProgress(80);
+      ProgressBar.setProgress(60);
 
       // Envia o prompt
       Utils.showStatus('Enviando para o ChatGPT...');
       await ChatGPT.sendPrompt(tabId, promptText);
+
+      ProgressBar.setProgress(70);
+
+      // Aguarda e captura a resposta
+      Utils.showStatus('Aguardando resposta do ChatGPT...');
+      const respostaResult = await Historico.captureResponse(tabId);
+
+      ProgressBar.setProgress(85);
+
+      // Parseia as seções se capturou a resposta
+      if (respostaResult.success && respostaResult.text) {
+        Utils.showStatus('Organizando resposta por seções...');
+        config.resposta = respostaResult.text;
+        config.secoes = Historico.parseSecoes(respostaResult.text);
+        
+        // Log de debug
+        console.log('📊 Seções parseadas:', Object.keys(config.secoes).length);
+        console.log('📝 Seções encontradas:', Object.keys(config.secoes).join(', '));
+      } else {
+        console.warn('⚠️ Não foi possível capturar a resposta:', respostaResult.error);
+      }
 
       ProgressBar.setProgress(95);
 
