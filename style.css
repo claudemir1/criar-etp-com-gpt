@@ -849,6 +849,7 @@ body.dark-mode .resposta-modal-close {
 
 .btn-ver-resposta:hover {
   background: #ffa500;
+  color: white;
   transform: translateY(-1px);
   box-shadow: 0 3px 8px rgba(252, 180, 33, 0.4);
 }
