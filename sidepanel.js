@@ -710,82 +710,15 @@ const Historico = {
       limparBtn.style.display = 'block';
     }
 
-    // Atualiza badges e botão
+    // Atualiza botão
     Utils.updateSubmitButton();
-    Badges.update();
 
     // Scroll para o topo
     window.scrollTo({ top: 0, behavior: 'smooth' });
   },
 };
 
-// ========================================
-// BADGES DE CONFIGURAÇÃO
-// ========================================
-const Badges = {
-  update() {
-    const container = document.getElementById('badgesContainer');
-    if (!container) return;
-
-    const contexto = document.getElementById('contexto')?.value.trim();
-    const paragrafos = document.querySelector(
-      'input[name="paragrafos"]:checked'
-    )?.value;
-    const tabular = document.querySelector(
-      'input[name="tabular"]:checked'
-    )?.value;
-    const previsao = document.querySelector(
-      'input[name="previsao"]:checked'
-    )?.value;
-    const locacao = document.querySelector(
-      'input[name="locacao"]:checked'
-    )?.value;
-
-    if (!contexto && !paragrafos) {
-      container.innerHTML = '';
-      return;
-    }
-
-    let badges = [];
-
-    if (paragrafos) {
-      badges.push(`
-        <div class="badge">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M14 17H4v2h10v-2zm6-8H4v2h16V9zM4 15h16v-2H4v2zM4 5v2h16V5H4z"/>
-          </svg>
-          ${paragrafos} §
-        </div>
-      `);
-    }
-
-    if (tabular) {
-      badges.push(`
-        <div class="badge">
-          📊 Tabular: ${tabular === 'sim' ? 'Sim' : 'Não'}
-        </div>
-      `);
-    }
-
-    if (previsao) {
-      badges.push(`
-        <div class="badge">
-          ✅ PCA: ${previsao === 'sim' ? 'Sim' : 'Não'}
-        </div>
-      `);
-    }
-
-    if (locacao) {
-      badges.push(`
-        <div class="badge">
-          🏢 Locação: ${locacao === 'sim' ? 'Sim' : 'Não'}
-        </div>
-      `);
-    }
-
-    container.innerHTML = badges.join('');
-  },
-};
+// Badges removidas - interface mais limpa
 
 // Progress Bar removida - usando apenas spinner + status text
 
@@ -1297,7 +1230,6 @@ const EventHandlers = {
         Utils.autoResizeTextarea(e.target);
 
         Utils.updateSubmitButton();
-        Badges.update();
       });
     }
 
@@ -1313,7 +1245,6 @@ const EventHandlers = {
         Storage.clearContext();
         limparBtn.style.display = 'none';
         Utils.updateSubmitButton();
-        Badges.update();
       });
     }
 
@@ -1321,7 +1252,6 @@ const EventHandlers = {
     document.querySelectorAll('input[type="radio"]').forEach(radio => {
       radio.addEventListener('change', () => {
         Utils.updateSubmitButton();
-        Badges.update();
       });
     });
 
@@ -1337,9 +1267,8 @@ const EventHandlers = {
     // Sistema de sobre/footer
     this.initAboutSystem();
 
-    // Atualiza botão e badges inicialmente
+    // Atualiza botão inicialmente
     Utils.updateSubmitButton();
-    Badges.update();
   },
 
   /**

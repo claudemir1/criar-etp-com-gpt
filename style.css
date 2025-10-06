@@ -573,33 +573,7 @@ body.dark-mode #limpar {
   font-size: 0.9rem;
 }
 
-/* Progress Bar removida - usando apenas spinner + status text */
-
-/* Badges */
-.badges-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.badge {
-  padding: 6px 12px;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-  color: white;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.badge svg {
-  width: 14px;
-  height: 14px;
-  fill: white;
-}
+/* Progress Bar e Badges removidas - interface mais limpa */
 
 /* Classes utilitárias */
 .hidden {
