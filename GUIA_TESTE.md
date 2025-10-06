@@ -28,6 +28,7 @@
 ### 4. Teste de Validação de Formulário
 
 **Botão deve estar desabilitado quando:**
+
 - [ ] Campo de contexto está vazio
 - [ ] Nenhum número de parágrafos selecionado
 - [ ] Opção de tabular não selecionada
@@ -35,16 +36,19 @@
 - [ ] Comparação com locação não selecionada
 
 **Botão deve estar habilitado quando:**
+
 - [ ] Todos os campos estão preenchidos
 
 ### 5. Teste de Geração de ETP
 
 #### Preparação
+
 - [ ] Abrir https://chatgpt.com em uma aba
 - [ ] Fazer login (se necessário) ou clicar em "Permanecer desconectado"
 - [ ] Abrir o Side Panel da extensão
 
 #### Teste 1: Geração Básica
+
 - [ ] Preencher o contexto com: "Aquisição de computadores para a Secretaria da Educação, sendo necessários 50 computadores desktop"
 - [ ] Selecionar 3 parágrafos
 - [ ] Selecionar "Sim" para tabular
@@ -58,6 +62,7 @@
 - [ ] Verificar se a mensagem de sucesso aparece
 
 #### Teste 2: Diferentes Configurações
+
 - [ ] Testar com 1 parágrafo
 - [ ] Testar com 5 parágrafos
 - [ ] Testar com tabular = "Não"
@@ -104,12 +109,14 @@
 ### 10. Teste de Tratamento de Erros
 
 #### Teste com ChatGPT fechado
+
 - [ ] Fechar todas as abas do ChatGPT
 - [ ] Abrir o Side Panel
 - [ ] Clicar em "Gerar ETP"
 - [ ] Verificar se uma nova aba do ChatGPT é aberta automaticamente
 
 #### Teste de conexão
+
 - [ ] Desabilitar temporariamente a internet
 - [ ] Tentar gerar um ETP
 - [ ] Verificar se uma mensagem de erro apropriada aparece
@@ -130,12 +137,15 @@
 ## 🐛 Problemas Conhecidos e Soluções
 
 ### Problema: Side Panel não abre
+
 **Solução**: Verificar se está usando Chrome 114 ou superior
 
 ### Problema: Botão de enviar não é clicado
+
 **Solução**: Aguardar alguns segundos para a página do ChatGPT carregar completamente
 
 ### Problema: Prompt não aparece no ChatGPT
+
 **Solução**: Recarregar a página do ChatGPT e tentar novamente
 
 ## ✅ Critérios de Aceitação
@@ -156,6 +166,7 @@ Para considerar a extensão funcionando corretamente:
 ## 📊 Relatório de Bugs
 
 Se encontrar algum bug, documente:
+
 1. Descrição do problema
 2. Passos para reproduzir
 3. Comportamento esperado
@@ -163,4 +174,3 @@ Se encontrar algum bug, documente:
 5. Screenshots (se aplicável)
 6. Versão do Chrome
 7. Console logs
-

@@ -14,6 +14,7 @@ Extensão do Chrome para automatizar a criação de Estudos Técnicos Preliminar
 ## 🚀 Instalação
 
 ### Pré-requisitos
+
 - Google Chrome versão 114 ou superior
 - Conta no ChatGPT (https://chatgpt.com)
 
@@ -83,11 +84,13 @@ Este projeto foi desenvolvido por **Claudemir Andrade** para auxiliar na elabora
 ## 📧 Contato
 
 Para suporte ou sugestões, entre em contato:
+
 - Email: claudemir.andrade@usp.br
 
 ## 🔄 Changelog
 
 ### v2.0 (2024)
+
 - Implementação do Chrome Side Panel API
 - Refatoração completa do código JavaScript
 - Correção de bugs críticos
@@ -97,8 +100,8 @@ Para suporte ou sugestões, entre em contato:
 - Validação aprimorada de formulários
 
 ### v1.2 (2024)
+
 - Versão inicial com popup
 - Funcionalidade básica de geração de ETP
 - Persistência de contexto
 - Sistema de ajuda integrado
-
