@@ -1,0 +1,217 @@
+body {
+  font-family: 'Arial', Helvetica, sans-serif;
+  background-color: white;
+  color: #333;
+  margin: 5px;
+  padding: 6px;
+  box-sizing: border-box;
+  width: 636px;
+  letter-spacing: 1px;
+}
+
+h2 {
+  font-size: 1.3rem;
+  color: #4a90e2;
+  text-align: center;
+}
+
+label {
+  font-size: 1rem;
+  color: #666;
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.contexto {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+textarea {
+  width: 94.3%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  resize: none;
+  margin-bottom: 20px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+  outline: none;
+}
+
+button {
+  width: 98%;
+  padding: 12px;
+  background-color: #4a90e2;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+button:hover {
+  background-color: #2976c4;
+}
+
+#resposta {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+  min-height: 50px;
+}
+
+#paragrafos label,
+#tabular label,
+#previsao label,
+#locacao label {
+  display: inline-flex;
+}
+
+#paragrafos label {
+  margin-right: 40px;
+}
+
+#tabular label,
+#previsao label,
+#locacao label {
+  margin-right: 18px;
+}
+
+input[type='radio'] {
+  appearance: none;
+  -webkit-appearance: none;
+  margin-right: 8px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: white;
+  border: 2px solid #357abd;
+  cursor: pointer;
+}
+
+input[type='radio']:checked {
+  background-color: #357abd;
+}
+
+input[type='radio']:checked::before {
+  content: '';
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: white;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+
+#sobre {
+  text-align: center;
+  font-size: 0.9em;
+  color: #395cc6;
+  border-top: 1px solid #ddd;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 50px;
+}
+
+#footer {
+  display: none;
+  text-align: center;
+  font-size: 1.2em;
+  color: #777;
+  margin-top: 28px;
+}
+
+.footer p {
+  height: 9px;
+}
+
+.footer a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+#ajuda1,
+#ajuda2 {
+  cursor: pointer;
+  border-radius: 50%;
+  width: 17px;
+  height: 17px;
+  padding: 1px;
+  display: inline-flex;
+  text-align: center;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+#ajuda_paragrafos,
+#ajuda_tabular {
+  display: none;
+  background-color: #f0f5f3;
+  padding: 5px;
+  border-radius: 6px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+div {
+  background-color: #c7e6dc;
+  border-radius: 5px;
+  padding: 6px;
+  width: 96%;
+  margin-bottom: 7px;
+}
+
+#limpar {
+  position: absolute;
+  top: 25px;
+  right: 20px;
+  width: 30px;
+  height: 30px;
+  background-color: transparent;
+  border: none;
+  color: #d0cdcd;
+  font-size: 1.3rem;
+  cursor: pointer;
+  display: none;
+}
+
+#limpar::before,
+#limpar::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 2px;
+  background-color: #d0cdcd;
+  transform-origin: center;
+  transition: background-color 0.3s;
+}
+
+#limpar::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+#limpar::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+#limpar:hover {
+  color: #7c7a7a;
+}
+
+#limpar:hover::before,
+#limpar:hover::after {
+  background-color: #7c7a7a;
+}
