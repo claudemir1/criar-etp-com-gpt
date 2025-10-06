@@ -523,11 +523,12 @@ body.dark-mode #limpar {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 12px;
+  gap: 8px;
 }
 
 .historico-item-info {
   flex: 1;
+  min-width: 0;
 }
 
 .historico-item-desc {
@@ -541,29 +542,38 @@ body.dark-mode #limpar {
 .historico-item-date {
   font-size: 0.7rem;
   color: var(--text-secondary);
-  display: flex;
-  align-items: center;
-  gap: 12px;
 }
 
 .btn-excluir-etp {
-  background: none;
+  background: rgba(239, 68, 68, 0.1);
   border: none;
   cursor: pointer;
   transition: all 0.2s ease;
-  font-size: 0.7rem;
   color: var(--text-secondary);
-  opacity: 0.6;
-  padding: 0;
-  display: inline-flex;
+  opacity: 0.7;
+  padding: 6px;
+  display: flex;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.btn-excluir-etp svg {
+  width: 16px;
+  height: 16px;
 }
 
 .btn-excluir-etp:hover {
-  color: #ef4444;
+  background: #ef4444;
   opacity: 1;
   transform: scale(1.1);
+}
+
+.btn-excluir-etp:hover svg {
+  color: white;
 }
 
 .historico-empty {
