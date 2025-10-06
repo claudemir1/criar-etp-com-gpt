@@ -326,32 +326,82 @@ input[type='radio']:checked::before {
   }
 }
 
-#sobre {
-  text-align: center;
-  font-size: 0.9em;
-  color: var(--primary);
-  border-top: 1px solid var(--border-color);
-  cursor: pointer;
-  font-weight: bold;
-  margin-top: 50px;
-  padding-top: 10px;
+/* Footer Profissional */
+.footer-card {
+  margin-top: 40px;
+  padding: 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px var(--shadow);
 }
 
-#footer {
-  display: none;
-  text-align: center;
-  font-size: 1.2em;
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.footer-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.footer-version {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.footer-version svg {
+  color: var(--accent);
+}
+
+.footer-author {
+  font-size: 0.85rem;
   color: var(--text-secondary);
-  margin-top: 28px;
 }
 
-.footer p {
-  height: 9px;
+.footer-author strong {
+  color: var(--text-primary);
+  font-weight: 600;
 }
 
-.footer a {
-  color: var(--primary);
-  text-decoration: none;
+.footer-links {
+  display: flex;
+  gap: 12px;
+}
+
+.footer-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--input-bg);
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+  border: 1px solid var(--border-color);
+}
+
+.footer-link:hover {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px var(--shadow);
+}
+
+.footer-link svg {
+  width: 20px;
+  height: 20px;
 }
 
 #ajuda1,

@@ -1,107 +1,226 @@
 # 📝 Criar ETP com ChatGPT
 
-Extensão do Chrome para automatizar a criação de Estudos Técnicos Preliminares (ETP) para contratações públicas utilizando o ChatGPT.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/version-2.1-blue.svg)](https://github.com/claudemir1/criar-etp-com-gpt)
+[![Chrome Web Store](https://img.shields.io/badge/chrome-extension-blue.svg)](https://chrome.google.com/webstore)
 
-## 🎯 Funcionalidades
+> Extensão para Google Chrome que automatiza a criação de Estudos Técnicos Preliminares (ETP) utilizando ChatGPT, seguindo as diretrizes da Instrução Normativa SGD/MGI nº 98/2023.
 
-- **Side Panel Integrado**: Interface lateral que funciona lado a lado com o ChatGPT
-- **Geração Automatizada**: Cria ETPs completos com base em parâmetros configuráveis
-- **Persistência de Dados**: Salva automaticamente o contexto da contratação
-- **Validação Inteligente**: Só permite geração quando todos os campos estão preenchidos
-- **Feedback Visual**: Indicadores de status durante o processamento
-- **Interface Intuitiva**: Design limpo e fácil de usar
+![Banner](https://via.placeholder.com/800x400/1094ab/ffffff?text=Criar+ETP+com+ChatGPT)
 
-## 🚀 Instalação
+## 📋 Sobre o Projeto
 
-### Pré-requisitos
+Esta extensão foi desenvolvida para auxiliar servidores públicos e profissionais de compras governamentais na elaboração de Estudos Técnicos Preliminares (ETP), automatizando a redação e oferecendo sugestões de texto contextualizadas através do ChatGPT.
 
-- Google Chrome versão 114 ou superior
-- Conta no ChatGPT (https://chatgpt.com)
+A ferramenta gera ETPs completos com as 13 seções obrigatórias, conforme a legislação vigente, economizando tempo e garantindo consistência na documentação.
 
-### Passos
+## ✨ Funcionalidades
 
-1. Clone ou baixe este repositório
-2. Abra o Chrome e navegue para `chrome://extensions/`
-3. Ative o "Modo do desenvolvedor" no canto superior direito
-4. Clique em "Carregar sem compactação"
-5. Selecione a pasta do projeto
+### 🎯 Principais Recursos
 
-## 📖 Como Usar
+- **🤖 Integração com ChatGPT**: Gera ETPs completos diretamente na interface do ChatGPT
+- **📑 Side Panel**: Interface lateral que permite visualizar a extensão e o ChatGPT simultaneamente
+- **🎨 Interface Moderna**: Design elegante com tema claro/escuro automático
+- **📊 13 Seções Completas**: Gera todas as seções obrigatórias do ETP automaticamente
+- **💾 Histórico Inteligente**: Salva os últimos 5 ETPs com respostas completas do ChatGPT
+- **📋 Copiar por Seção**: Copie cada seção individualmente ou o documento completo
+- **🔄 Auto-resize**: Textarea que se ajusta automaticamente ao conteúdo
+- **✅ Validação em Tempo Real**: Verifica se todos os campos obrigatórios estão preenchidos
+- **🗑️ Gerenciamento**: Exclua ETPs antigos com confirmação de segurança
 
-1. **Navegue até o ChatGPT**: Abra https://chatgpt.com
-2. **Abra o Side Panel**: Clique no ícone da extensão na barra de ferramentas
-3. **Preencha os campos**:
-   - Descrição da necessidade da contratação
+### 📝 Seções do ETP Geradas
+
+1. Descrição da Necessidade da Contratação
+2. Demonstração da Previsão no PCA
+3. Área Requisitante
+4. Descrição dos Requisitos da Contratação
+5. Levantamento de Mercado
+6. Estimativa de Valores
+7. Descrição da Solução como um Todo
+8. Justificativas
+9. Sustentabilidade Socioambiental
+10. Estimativa Impacto Econômico-Financeiro
+11. Providências a Serem Adotadas
+12. Possíveis Impactos Ambientais
+13. Posicionamento Conclusivo
+
+## 🛠️ Tecnologias Utilizadas
+
+### Frontend
+- **HTML5** - Estrutura semântica
+- **CSS3** - Estilização moderna com variáveis CSS
+- **JavaScript (ES6+)** - Lógica da aplicação
+
+### APIs do Chrome
+- **Chrome Extension Manifest V3** - Última versão da API de extensões
+- **Chrome Side Panel API** - Interface lateral
+- **Chrome Storage API** - Persistência de dados local
+- **Chrome Scripting API** - Injeção de scripts no ChatGPT
+
+### Ferramentas
+- **Git** - Controle de versão
+- **GitHub** - Hospedagem do código
+
+## 🎨 Design System
+
+### Paleta de Cores
+- **Primary**: `#1094ab` (Azul Turquesa)
+- **Secondary**: `#64c4d2` (Azul Claro)
+- **Accent**: `#fcb421` (Amarelo)
+
+### Características
+- Modo escuro automático baseado nas preferências do sistema
+- Toggle manual de tema
+- Animações suaves com `cubic-bezier`
+- Radio buttons com animações de check
+- Feedback visual em todas as interações
+
+## ⚙️ Instalação e Uso
+
+### Requisitos
+- Google Chrome versão 88 ou superior
+- Conta ativa no ChatGPT (https://chatgpt.com)
+
+### Instalação via Chrome Web Store
+1. Acesse a [Chrome Web Store](#) (em breve)
+2. Clique em "Adicionar ao Chrome"
+3. Confirme a instalação
+
+### Instalação Manual (Desenvolvedor)
+
+1. **Clone o repositório**
+```bash
+git clone https://github.com/claudemir1/criar-etp-com-gpt.git
+cd criar-etp-com-gpt
+```
+
+2. **Carregue a extensão no Chrome**
+   - Abra o Chrome e acesse `chrome://extensions/`
+   - Ative o "Modo do desenvolvedor" no canto superior direito
+   - Clique em "Carregar sem compactação"
+   - Selecione a pasta do projeto
+
+3. **Pronto!** 🎉
+   - O ícone da extensão aparecerá na barra de ferramentas
+   - Acesse https://chatgpt.com
+   - Clique no ícone da extensão para abrir o painel lateral
+
+### Como Usar
+
+1. **Preencha o contexto**: Descreva a necessidade de aquisição/contratação
+2. **Configure as opções**:
    - Quantidade de parágrafos por seção (1-5)
-   - Preferência de formato tabular para estimativa de preços
-   - Se a contratação está prevista no PCA
-   - Se deseja comparar com locação
-4. **Gere o ETP**: Clique em "Gerar ETP" e aguarde o processamento
-5. **Revise o resultado**: O ChatGPT gerará o ETP completo na tela principal
+   - Se é tabular ou não
+   - Se está previsto no PCA
+   - Se é locação
+3. **Clique em "Gerar ETP"**
+4. **Aguarde**: A extensão enviará o prompt ao ChatGPT e aguardará a resposta completa
+5. **Visualize e copie**: Use o botão "Ver Resposta Completa" para acessar o ETP organizado por seções
 
-## 🏗️ Estrutura do Projeto
+## 📚 Documentação Adicional
 
-```
-.
-├── manifest.json          # Configuração da extensão
-├── background.js          # Service Worker para gerenciar o Side Panel
-├── sidepanel.html         # Interface do usuário
-├── sidepanel.js           # Lógica principal da aplicação
-├── style.css              # Estilos da interface
-├── images/                # Ícones da extensão
-│   ├── icon_16x16.png
-│   ├── icon_32x32.png
-│   ├── icon_48x48.png
-│   └── icon_128x128.png
-└── README.md
-```
+- **[CHANGELOG.md](CHANGELOG-v2.1.md)** - Histórico de versões e alterações
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Guia para contribuidores
+- **[DEBUG_GUIDE.md](DEBUG_GUIDE.md)** - Guia de depuração
+- **[GUIA_TESTE.md](GUIA_TESTE.md)** - Manual de testes
 
-## 🔧 Tecnologias Utilizadas
+## 🤝 Contribuições
 
-- **Chrome Extension Manifest V3**: Versão mais recente da API de extensões
-- **Chrome Side Panel API**: Para interface lateral nativa
-- **JavaScript ES6+**: Código moderno e organizado
-- **Chrome Storage API**: Persistência de dados local
-- **MutationObserver**: Detecção eficiente de mudanças no DOM
+Contribuições são muito bem-vindas! Este é um projeto open source e qualquer ajuda é apreciada.
 
-## 📋 Funcionalidades Técnicas
+### Como Contribuir
 
-### Melhorias Implementadas na v2.0
+1. **Fork o projeto**
+2. **Crie uma branch para sua feature**
+   ```bash
+   git checkout -b feature/MinhaNovaFeature
+   ```
+3. **Commit suas mudanças**
+   ```bash
+   git commit -m 'feat: Adiciona nova funcionalidade X'
+   ```
+4. **Push para a branch**
+   ```bash
+   git push origin feature/MinhaNovaFeature
+   ```
+5. **Abra um Pull Request**
 
-- ✅ **Side Panel API**: Interface lateral nativa do Chrome
-- ✅ **Código Moderno**: Refatoração completa usando ES6+
-- ✅ **Tratamento de Erros**: Try-catch em todas as operações críticas
-- ✅ **MutationObserver**: Substituição de setInterval para melhor performance
-- ✅ **Feedback Visual**: Spinner e mensagens de status
-- ✅ **Validação Robusta**: Verificação de todos os campos obrigatórios
-- ✅ **Organização Modular**: Código separado em módulos lógicos
-- ✅ **Correção de Bugs**: Todos os bugs críticos da v1.2 corrigidos
+### Padrão de Commits
+
+Seguimos o padrão [Conventional Commits](https://www.conventionalcommits.org/):
+
+- `feat:` Nova funcionalidade
+- `fix:` Correção de bug
+- `docs:` Documentação
+- `style:` Formatação, sem mudança de código
+- `refactor:` Refatoração de código
+- `test:` Adição ou correção de testes
+- `chore:` Tarefas de manutenção
+
+### Código de Conduta
+
+Por favor, seja respeitoso e construtivo em todas as interações. Veja [CONTRIBUTING.md](CONTRIBUTING.md) para mais detalhes.
+
+## 🐛 Reportar Bugs
+
+Encontrou um bug? Por favor, [abra uma issue](https://github.com/claudemir1/criar-etp-com-gpt/issues) com:
+
+- Descrição detalhada do problema
+- Passos para reproduzir
+- Comportamento esperado vs. comportamento atual
+- Screenshots (se aplicável)
+- Versão do Chrome e da extensão
+
+## 💡 Roadmap
+
+### Versão 2.2 (Planejado)
+- [ ] Exportar ETP para PDF
+- [ ] Exportar ETP para Word (.docx)
+- [ ] Templates customizáveis
+- [ ] Sincronização entre dispositivos
+
+### Versão 3.0 (Futuro)
+- [ ] Suporte para outros idiomas
+- [ ] Integração com Google Drive
+- [ ] Modo colaborativo
+- [ ] Análise de qualidade do ETP
+
+## 📊 Estatísticas do Projeto
+
+- **Linhas de código**: ~3,500
+- **Arquivos**: 20+
+- **Versão atual**: 2.1
+- **Última atualização**: Outubro 2025
 
 ## 📄 Licença
 
-Este projeto foi desenvolvido por **Claudemir Andrade** para auxiliar na elaboração de ETPs conforme a Lei nº 14.133/21 e o Decreto Estadual n° 68.185/2023 do Estado de São Paulo.
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
-## 📧 Contato
+```
+MIT License - Copyright (c) 2025 Claudemir Andrade
+```
 
-Para suporte ou sugestões, entre em contato:
+## 👤 Autor
 
+**Claudemir Andrade**
+
+- GitHub: [@claudemir1](https://github.com/claudemir1)
 - Email: claudemir.andrade@usp.br
 
-## 🔄 Changelog
+## 🙏 Agradecimentos
 
-### v2.0 (2024)
+- ChatGPT pela API que torna tudo possível
+- Comunidade open source por compartilhar conhecimento
+- Todos os usuários que testam e fornecem feedback
 
-- Implementação do Chrome Side Panel API
-- Refatoração completa do código JavaScript
-- Correção de bugs críticos
-- Adição de feedback visual de processamento
-- Melhoria na organização e manutenibilidade do código
-- Implementação de MutationObserver para melhor performance
-- Validação aprimorada de formulários
+---
 
-### v1.2 (2024)
+<div align="center">
 
-- Versão inicial com popup
-- Funcionalidade básica de geração de ETP
-- Persistência de contexto
-- Sistema de ajuda integrado
+**⭐ Se este projeto te ajudou, considere dar uma estrela!**
+
+[Reportar Bug](https://github.com/claudemir1/criar-etp-com-gpt/issues) • 
+[Solicitar Feature](https://github.com/claudemir1/criar-etp-com-gpt/issues) • 
+[Documentação](https://github.com/claudemir1/criar-etp-com-gpt/wiki)
+
+</div>

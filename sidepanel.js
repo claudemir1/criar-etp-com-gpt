@@ -1279,9 +1279,6 @@ const EventHandlers = {
     // Sistema de ajuda
     this.initHelpSystem();
 
-    // Sistema de sobre/footer
-    this.initAboutSystem();
-
     // Atualiza botão inicialmente
     Utils.updateSubmitButton();
   },
@@ -1426,26 +1423,6 @@ const EventHandlers = {
       ajudaTabular.addEventListener('mouseleave', () => {
         ajudaTabular.style.display = 'none';
         ajuda2.style.display = 'inline-flex';
-      });
-    }
-  },
-
-  /**
-   * Sistema de sobre/footer
-   */
-  initAboutSystem() {
-    const sobre = document.getElementById('sobre');
-    const footer = document.getElementById('footer');
-
-    if (sobre && footer) {
-      sobre.addEventListener('mouseenter', () => {
-        sobre.style.display = 'none';
-        footer.style.display = 'block';
-      });
-
-      footer.addEventListener('mouseleave', () => {
-        footer.style.display = 'none';
-        sobre.style.display = 'block';
       });
     }
   },
