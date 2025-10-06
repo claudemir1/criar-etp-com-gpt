@@ -7,13 +7,13 @@ const CONFIG = {
     PROMPT_TEXTAREA: '#prompt-textarea',
     SEND_BUTTON: 'button[aria-label="Enviar prompt"]',
     STAY_LOGGED_OUT: 'a:contains("Permanecer desconectado")',
-    ARTICLES: 'article'
+    ARTICLES: 'article',
   },
   TIMEOUTS: {
     BUTTON_CHECK: 200,
     MAX_RETRIES: 50,
-    ARTICLE_CLEANUP: 1000
-  }
+    ARTICLE_CLEANUP: 1000,
+  },
 };
 
 // ========================================
@@ -21,7 +21,7 @@ const CONFIG = {
 // ========================================
 const state = {
   isProcessing: false,
-  currentTabId: null
+  currentTabId: null,
 };
 
 // ========================================
@@ -34,7 +34,7 @@ const Utils = {
   showStatus(message, isError = false) {
     const statusContainer = document.getElementById('status-container');
     const statusText = document.getElementById('status-text');
-    
+
     if (statusContainer && statusText) {
       statusText.textContent = message;
       statusContainer.classList.remove('hidden');
@@ -61,11 +61,19 @@ const Utils = {
    */
   validateForm() {
     const contexto = document.getElementById('contexto')?.value.trim();
-    const pg = document.querySelector('input[name="paragrafos"]:checked')?.value;
-    const tabular = document.querySelector('input[name="tabular"]:checked')?.value;
-    const previsao = document.querySelector('input[name="previsao"]:checked')?.value;
-    const locacao = document.querySelector('input[name="locacao"]:checked')?.value;
-    
+    const pg = document.querySelector(
+      'input[name="paragrafos"]:checked'
+    )?.value;
+    const tabular = document.querySelector(
+      'input[name="tabular"]:checked'
+    )?.value;
+    const previsao = document.querySelector(
+      'input[name="previsao"]:checked'
+    )?.value;
+    const locacao = document.querySelector(
+      'input[name="locacao"]:checked'
+    )?.value;
+
     return !!(contexto && pg && tabular && previsao && locacao);
   },
 
@@ -89,12 +97,15 @@ const Utils = {
    * Gera o prompt completo para o ChatGPT
    */
   generatePrompt(paragr, contexto, tabular, previsao, locacao) {
-    const locacaoText = locacao === 'sim' ? 'e locação' : 'e outras opções de mercado';
-    const complemento = tabular === 'não'
-      ? '*Na seção VI, apresente o resultado da estimativa de preços em forma de texto, contendo até três valores para cada tipo de item nos últimos três meses, indicando as fontes e incluindo o valor médio de cada item.*'
-      : '*Na seção VI, apresente o resultado da estimativa de preços em uma tabela, contendo até três valores para cada tipo de item nos últimos três meses, indicando as fontes e incluindo o valor médio de cada item.*';
-    
-    const previsaoText = previsao === 'sim' ? 'está prevista' : 'não está prevista';
+    const locacaoText =
+      locacao === 'sim' ? 'e locação' : 'e outras opções de mercado';
+    const complemento =
+      tabular === 'não'
+        ? '*Na seção VI, apresente o resultado da estimativa de preços em forma de texto, contendo até três valores para cada tipo de item nos últimos três meses, indicando as fontes e incluindo o valor médio de cada item.*'
+        : '*Na seção VI, apresente o resultado da estimativa de preços em uma tabela, contendo até três valores para cada tipo de item nos últimos três meses, indicando as fontes e incluindo o valor médio de cada item.*';
+
+    const previsaoText =
+      previsao === 'sim' ? 'está prevista' : 'não está prevista';
 
     return `Atue como demandante de área técnica de autarquia pública estadual, especialista na elaboração do estudo técnico preliminar (ETP).
 
@@ -138,7 +149,7 @@ ${complemento}
 #XII - descrição de possíveis impactos ambientais e respectivas medidas mitigadoras, incluídos requisitos de baixo consumo de energia e de outros recursos, bem como logística reversa para desfazimento e reciclagem de bens e refugos, quando aplicável;#
 
 #XIII - posicionamento conclusivo sobre a adequação da contratação para o atendimento da necessidade a que se destina.#`;
-  }
+  },
 };
 
 // ========================================
@@ -150,18 +161,21 @@ const ChatGPT = {
    */
   async getCurrentChatGPTTab() {
     try {
-      const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+      const tabs = await chrome.tabs.query({
+        active: true,
+        currentWindow: true,
+      });
       const currentTab = tabs[0];
-      
+
       if (!currentTab.url?.includes('chatgpt.com')) {
         // Se não estiver no ChatGPT, abre uma nova aba
-        const newTab = await chrome.tabs.create({ 
-          url: CONFIG.CHATGPT_URL, 
-          active: true 
+        const newTab = await chrome.tabs.create({
+          url: CONFIG.CHATGPT_URL,
+          active: true,
         });
         return newTab.id;
       }
-      
+
       return currentTab.id;
     } catch (error) {
       console.error('Erro ao obter aba do ChatGPT:', error);
@@ -174,82 +188,147 @@ const ChatGPT = {
    */
   async sendPrompt(tabId, promptText) {
     try {
-      await chrome.scripting.executeScript({
+      const results = await chrome.scripting.executeScript({
         target: { tabId },
         func: this.injectAndSendPrompt,
-        args: [promptText]
+        args: [promptText],
       });
+      
+      console.log('Resultado da injeção:', results);
+      
+      // Verifica se houve erro
+      if (results && results[0] && results[0].result) {
+        if (results[0].result.error) {
+          throw new Error(results[0].result.error);
+        }
+      }
     } catch (error) {
       console.error('Erro ao enviar prompt:', error);
-      throw new Error('Erro ao enviar prompt para o ChatGPT');
+      throw new Error('Erro ao enviar prompt: ' + error.message);
     }
   },
 
   /**
    * Função injetada na página do ChatGPT
+   * Retorna objeto para melhor debugging
    */
   injectAndSendPrompt(promptText) {
-    return new Promise((resolve, reject) => {
-      try {
-        // Encontra o campo de texto do prompt
-        const promptInput = document.getElementById('prompt-textarea');
-        
-        if (!promptInput) {
-          reject('Campo de prompt não encontrado');
-          return;
-        }
+    console.log('🔍 Iniciando injeção do prompt...');
+    
+    // Encontra o campo de texto do prompt
+    const promptInput = document.getElementById('prompt-textarea');
+    
+    if (!promptInput) {
+      console.error('❌ Campo prompt-textarea não encontrado');
+      return { error: 'Campo de prompt não encontrado' };
+    }
+    
+    console.log('✅ Campo de prompt encontrado:', promptInput);
 
-        // Insere o texto
-        promptInput.value = '';
-        promptInput.textContent = promptText;
-        promptInput.dispatchEvent(new Event('input', { bubbles: true }));
-
-        // Aguarda o botão de enviar ficar disponível usando MutationObserver
-        const sendButton = document.querySelector('button[aria-label="Enviar prompt"]');
+    try {
+      // Foca no campo
+      promptInput.focus();
+      console.log('✅ Campo focado');
+      
+      // Seleciona todo o conteúdo e apaga
+      const selection = window.getSelection();
+      const range = document.createRange();
+      range.selectNodeContents(promptInput);
+      selection.removeAllRanges();
+      selection.addRange(range);
+      document.execCommand('delete');
+      
+      // Insere o novo texto usando execCommand (mais compatível com contentEditable)
+      document.execCommand('insertText', false, promptText);
+      console.log('✅ Texto inserido via execCommand');
+      
+      // Fallback: se o texto não foi inserido, usa innerText
+      if (!promptInput.textContent || promptInput.textContent.trim() === '') {
+        promptInput.innerText = promptText;
+        console.log('✅ Texto inserido via innerText (fallback)');
+      }
+      
+      // Dispara eventos de input
+      const inputEvent = new Event('input', { bubbles: true, cancelable: true });
+      promptInput.dispatchEvent(inputEvent);
+      console.log('✅ Evento input disparado');
+      
+      // Aguarda um momento para o ChatGPT processar
+      setTimeout(() => {
+        // Procura o botão de enviar
+        const sendButton = document.querySelector('button[data-testid="send-button"]') ||
+                          document.querySelector('button[aria-label="Enviar prompt"]') ||
+                          document.querySelector('button[aria-label="Send prompt"]');
         
         if (!sendButton) {
-          reject('Botão de enviar não encontrado');
-          return;
-        }
-
-        // Usa MutationObserver para detectar quando o botão fica habilitado
-        const observer = new MutationObserver((mutations) => {
-          if (!sendButton.disabled) {
-            observer.disconnect();
-            sendButton.click();
+          console.error('❌ Botão de enviar não encontrado');
+          console.log('Tentando procurar com outros seletores...');
+          
+          // Tenta encontrar o botão por outros métodos
+          const buttons = Array.from(document.querySelectorAll('button'));
+          const possibleButton = buttons.find(btn => {
+            const svg = btn.querySelector('svg');
+            return svg && !btn.disabled;
+          });
+          
+          if (possibleButton) {
+            console.log('✅ Botão encontrado por método alternativo');
+            possibleButton.click();
+            console.log('✅ Botão clicado!');
+          } else {
+            return { error: 'Botão de enviar não encontrado' };
+          }
+        } else {
+          console.log('✅ Botão de enviar encontrado:', sendButton);
+          
+          // Aguarda o botão ficar habilitado
+          const checkAndClick = () => {
+            if (!sendButton.disabled) {
+              sendButton.click();
+              console.log('✅ Botão clicado!');
+              
+              // Remove o artigo do prompt após envio
+              setTimeout(() => {
+                const articles = document.querySelectorAll('article');
+                articles.forEach(article => {
+                  if (article.textContent.includes('Atue como demandante')) {
+                    article.remove();
+                    console.log('✅ Artigo do prompt removido');
+                  }
+                });
+              }, 2000);
+              
+              return true;
+            }
+            return false;
+          };
+          
+          // Tenta clicar imediatamente
+          if (!checkAndClick()) {
+            console.log('⏳ Aguardando botão ficar habilitado...');
             
-            // Remove o artigo com o prompt após um curto delay
-            setTimeout(() => {
-              const articles = document.querySelectorAll('article');
-              articles.forEach(article => {
-                if (article.textContent.includes('Atue como demandante')) {
-                  article.remove();
+            // Usa polling como fallback
+            let attempts = 0;
+            const interval = setInterval(() => {
+              attempts++;
+              if (checkAndClick() || attempts > 30) {
+                clearInterval(interval);
+                if (attempts > 30) {
+                  console.error('❌ Timeout: botão não ficou habilitado');
                 }
-              });
-            }, 1000);
-            
-            resolve('Prompt enviado com sucesso');
+              }
+            }, 500);
           }
-        });
-
-        observer.observe(sendButton, {
-          attributes: true,
-          attributeFilter: ['disabled']
-        });
-
-        // Timeout de segurança
-        setTimeout(() => {
-          observer.disconnect();
-          if (sendButton.disabled) {
-            reject('Timeout: botão de enviar não ficou disponível');
-          }
-        }, 10000);
-
-      } catch (error) {
-        reject('Erro ao processar prompt: ' + error.message);
-      }
-    });
-  }
+        }
+      }, 300);
+      
+      return { success: true };
+      
+    } catch (error) {
+      console.error('❌ Erro ao processar prompt:', error);
+      return { error: error.message };
+    }
+  },
 };
 
 // ========================================
@@ -264,7 +343,7 @@ const Storage = {
       const result = await chrome.storage.local.get('contexto');
       const contextoField = document.getElementById('contexto');
       const limparBtn = document.getElementById('limpar');
-      
+
       if (result.contexto && contextoField) {
         contextoField.value = result.contexto;
         if (limparBtn) {
@@ -296,7 +375,7 @@ const Storage = {
     } catch (error) {
       console.error('Erro ao limpar contexto:', error);
     }
-  }
+  },
 };
 
 // ========================================
@@ -313,7 +392,7 @@ const EventHandlers = {
     // Campo de contexto
     const contextoField = document.getElementById('contexto');
     if (contextoField) {
-      contextoField.addEventListener('input', (e) => {
+      contextoField.addEventListener('input', e => {
         const limparBtn = document.getElementById('limpar');
         Storage.saveContext(e.target.value);
         if (limparBtn) {
@@ -373,21 +452,36 @@ const EventHandlers = {
 
       // Coleta dados do formulário
       const contexto = document.getElementById('contexto').value.trim();
-      const paragr = document.querySelector('input[name="paragrafos"]:checked').value;
-      const tabular = document.querySelector('input[name="tabular"]:checked').value;
-      const previsao = document.querySelector('input[name="previsao"]:checked').value;
-      const locacao = document.querySelector('input[name="locacao"]:checked').value;
+      const paragr = document.querySelector(
+        'input[name="paragrafos"]:checked'
+      ).value;
+      const tabular = document.querySelector(
+        'input[name="tabular"]:checked'
+      ).value;
+      const previsao = document.querySelector(
+        'input[name="previsao"]:checked'
+      ).value;
+      const locacao = document.querySelector(
+        'input[name="locacao"]:checked'
+      ).value;
 
       // Gera o prompt
-      const promptText = Utils.generatePrompt(paragr, contexto, tabular, previsao, locacao);
+      const promptText = Utils.generatePrompt(
+        paragr,
+        contexto,
+        tabular,
+        previsao,
+        locacao
+      );
 
       // Obtém a aba do ChatGPT
       Utils.showStatus('Preparando prompt...');
       const tabId = await ChatGPT.getCurrentChatGPTTab();
       state.currentTabId = tabId;
 
-      // Pequeno delay para garantir que a página carregou
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Delay maior para garantir que a página carregou completamente
+      Utils.showStatus('Aguardando página carregar...');
+      await new Promise(resolve => setTimeout(resolve, 3000));
 
       // Envia o prompt
       Utils.showStatus('Enviando para o ChatGPT...');
@@ -397,7 +491,6 @@ const EventHandlers = {
       setTimeout(() => {
         Utils.hideStatus();
       }, 3000);
-
     } catch (error) {
       console.error('Erro ao gerar ETP:', error);
       Utils.showStatus('Erro: ' + error.message, true);
@@ -461,7 +554,7 @@ const EventHandlers = {
         sobre.style.display = 'block';
       });
     }
-  }
+  },
 };
 
 // ========================================
@@ -470,4 +563,3 @@ const EventHandlers = {
 document.addEventListener('DOMContentLoaded', () => {
   EventHandlers.init();
 });
-
