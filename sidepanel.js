@@ -562,13 +562,14 @@ const Historico = {
           <div class="secao-item">
             <div class="secao-header">
               <h3>${titulo}</h3>
-              <button class="btn-copiar-secao" data-secao="${secao}">
+              </div>
+              <div class="secao-conteudo" id="secao-${secao}">
+              ${conteudo.replace(/\n/g, '<br>')}
+              
+            </div>
+            <button class="btn-copiar-secao" data-secao="${secao}">
                 📋 Copiar
               </button>
-            </div>
-            <div class="secao-conteudo" id="secao-${secao}">
-              ${conteudo.replace(/\n/g, '<br>')}
-            </div>
           </div>
         `;
       })
@@ -707,8 +708,12 @@ const Historico = {
       `input[name="locacao"][value="${config.locacao}"]`
     ).checked = true;
 
-    // Auto-resize do textarea após carregar
-    Utils.autoResizeTextarea(contextoField);
+    // Auto-resize do textarea após carregar (com delay para garantir CSS aplicado)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        Utils.autoResizeTextarea(contextoField);
+      });
+    });
 
     // Mostra botão limpar
     const limparBtn = document.getElementById('limpar');
@@ -1159,8 +1164,12 @@ const Storage = {
       if (result.contexto && contextoField) {
         contextoField.value = result.contexto;
 
-        // Auto-resize após carregar
-        Utils.autoResizeTextarea(contextoField);
+        // Auto-resize após carregar (com delay para garantir CSS aplicado)
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            Utils.autoResizeTextarea(contextoField);
+          });
+        });
 
         if (limparBtn) {
           limparBtn.style.display = 'block';
