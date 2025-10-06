@@ -1,33 +1,51 @@
-body {
-  font-family: 'Arial', Helvetica, sans-serif;
-  background-color: white;
-  color: #333;
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  letter-spacing: 1px;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #1f2937;
+  margin: 0;
+  padding: 0;
   height: 100vh;
   overflow-y: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .container {
-  padding: 16px;
+  padding: 20px;
   max-width: 500px;
   margin: 0 auto;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  min-height: 100vh;
 }
 
 h2 {
-  font-size: 1.3rem;
-  color: #4a90e2;
+  font-size: 1.75rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   text-align: center;
+  margin-bottom: 24px;
+  letter-spacing: -0.5px;
 }
 
 label {
-  font-size: 1rem;
-  color: #666;
+  font-size: 0.875rem;
+  color: #4b5563;
   display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
+  margin-bottom: 8px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
 }
 
 .contexto {
@@ -37,43 +55,81 @@ label {
 }
 
 textarea {
-  width: calc(100% - 24px);
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 1.1rem;
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 0.95rem;
   resize: vertical;
-  min-height: 80px;
+  min-height: 100px;
   margin-bottom: 20px;
-  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   outline: none;
-  font-family: 'Arial', Helvetica, sans-serif;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  background: #ffffff;
+}
+
+textarea:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  transform: translateY(-1px);
 }
 
 button {
   width: 100%;
-  padding: 12px;
-  background-color: #4a90e2;
-  color: #fff;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
   border: none;
-  border-radius: 5px;
+  border-radius: 12px;
   font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+              0 2px 4px -1px rgba(0, 0, 0, 0.06);
   margin-bottom: 20px;
   margin-top: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+button:hover:not(:disabled)::before {
+  opacity: 1;
 }
 
 button:hover:not(:disabled) {
-  background-color: #2976c4;
-  transform: translateY(-1px);
-  box-shadow: 2px 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+              0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+button span {
+  position: relative;
+  z-index: 1;
 }
 
 button:disabled {
   cursor: not-allowed;
-  opacity: 0.5;
+  opacity: 0.6;
+  filter: grayscale(0.5);
 }
 
 #resposta {
@@ -111,24 +167,32 @@ input[type='radio'] {
   height: 20px;
   border-radius: 50%;
   background-color: white;
-  border: 2px solid #357abd;
+  border: 2px solid #d1d5db;
   cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+input[type='radio']:hover {
+  border-color: #667eea;
 }
 
 input[type='radio']:checked {
-  background-color: #357abd;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: #667eea;
 }
 
 input[type='radio']:checked::before {
   content: '';
   display: block;
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background-color: white;
   position: absolute;
-  top: 5px;
-  left: 5px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 #sobre {
@@ -181,11 +245,19 @@ input[type='radio']:checked::before {
 }
 
 div {
-  background-color: #c7e6dc;
-  border-radius: 5px;
-  padding: 10px;
-  width: calc(100% - 20px);
-  margin-bottom: 10px;
+  background: linear-gradient(135deg, #f0f4ff 0%, #e8f0fe 100%);
+  border-radius: 12px;
+  padding: 16px;
+  width: 100%;
+  margin-bottom: 16px;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s ease;
+}
+
+div:hover {
+  border-color: #667eea;
+  box-shadow: 0 4px 6px -1px rgba(102, 126, 234, 0.1);
+  transform: translateY(-1px);
 }
 
 #limpar {
@@ -238,17 +310,18 @@ div {
   align-items: center;
   justify-content: center;
   gap: 12px;
-  padding: 12px;
-  background-color: #e8f4fd;
-  border: 1px solid #4a90e2;
-  border-radius: 5px;
-  margin-bottom: 15px;
-  animation: slideIn 0.3s ease;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border: 2px solid #667eea;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(102, 126, 234, 0.1);
 }
 
 .status-container.error {
-  background-color: #ffe8e8;
-  border-color: #e74c3c;
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  border-color: #ef4444;
 }
 
 .status-container.hidden {
@@ -258,11 +331,11 @@ div {
 @keyframes slideIn {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-10px) scale(0.95);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
@@ -270,21 +343,25 @@ div {
 .spinner {
   width: 20px;
   height: 20px;
-  border: 3px solid #f3f3f3;
-  border-top: 3px solid #4a90e2;
+  border: 3px solid rgba(102, 126, 234, 0.2);
+  border-top: 3px solid #667eea;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 #status-text {
   font-size: 0.95rem;
-  color: #333;
-  font-weight: 500;
+  color: #1f2937;
+  font-weight: 600;
 }
 
 /* Classes utilitárias */
