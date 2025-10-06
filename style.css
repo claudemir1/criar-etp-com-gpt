@@ -2,11 +2,18 @@ body {
   font-family: 'Arial', Helvetica, sans-serif;
   background-color: white;
   color: #333;
-  margin: 5px;
-  padding: 6px;
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
-  width: 636px;
   letter-spacing: 1px;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.container {
+  padding: 16px;
+  max-width: 500px;
+  margin: 0 auto;
 }
 
 h2 {
@@ -30,19 +37,21 @@ label {
 }
 
 textarea {
-  width: 94.3%;
+  width: calc(100% - 24px);
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 1.1rem;
-  resize: none;
+  resize: vertical;
+  min-height: 80px;
   margin-bottom: 20px;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
   outline: none;
+  font-family: 'Arial', Helvetica, sans-serif;
 }
 
 button {
-  width: 98%;
+  width: 100%;
   padding: 12px;
   background-color: #4a90e2;
   color: #fff;
@@ -50,14 +59,21 @@ button {
   border-radius: 5px;
   font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
   margin-top: 20px;
 }
 
-button:hover {
+button:hover:not(:disabled) {
   background-color: #2976c4;
+  transform: translateY(-1px);
+  box-shadow: 2px 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 #resposta {
@@ -167,9 +183,9 @@ input[type='radio']:checked::before {
 div {
   background-color: #c7e6dc;
   border-radius: 5px;
-  padding: 6px;
-  width: 96%;
-  margin-bottom: 7px;
+  padding: 10px;
+  width: calc(100% - 20px);
+  margin-bottom: 10px;
 }
 
 #limpar {
@@ -214,4 +230,86 @@ div {
 #limpar:hover::before,
 #limpar:hover::after {
   background-color: #7c7a7a;
+}
+
+/* Status de processamento */
+.status-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px;
+  background-color: #e8f4fd;
+  border: 1px solid #4a90e2;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  animation: slideIn 0.3s ease;
+}
+
+.status-container.error {
+  background-color: #ffe8e8;
+  border-color: #e74c3c;
+}
+
+.status-container.hidden {
+  display: none;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Spinner animado */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #4a90e2;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+#status-text {
+  font-size: 0.95rem;
+  color: #333;
+  font-weight: 500;
+}
+
+/* Classes utilitárias */
+.hidden {
+  display: none !important;
+}
+
+.ajuda-icon {
+  cursor: pointer;
+  border-radius: 50%;
+  width: 17px;
+  height: 17px;
+  padding: 1px;
+  display: inline-flex;
+  text-align: center;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.ajuda-texto {
+  display: none;
+  background-color: #f0f5f3;
+  padding: 8px;
+  border-radius: 6px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+  font-size: 0.9rem;
+  line-height: 1.4;
 }

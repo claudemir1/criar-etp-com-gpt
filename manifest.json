@@ -1,12 +1,13 @@
 {
   "manifest_version": 3,
   "name": "Criar ETP com chat GPT",
-  "version": "1.2",
+  "version": "2.0",
   "description": "Extensão para criação de Estudos Técnicos Preliminares (ETP), automatizando a redação e oferecendo sugestões de texto com GPT.",
   "permissions": [
     "activeTab",
     "scripting",
-    "storage"
+    "storage",
+    "sidePanel"
   ],
   "host_permissions": [
     "https://chatgpt.com/*"
@@ -17,8 +18,13 @@
     "48": "images/icon_48x48.png",
     "128": "images/icon_128x128.png"
   },
-  
   "action": {
-    "default_popup": "popup.html"
+    "default_title": "Criar ETP com ChatGPT"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "background": {
+    "service_worker": "background.js"
   }
 }

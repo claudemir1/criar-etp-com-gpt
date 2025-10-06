@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Criar ETP com chat GPT</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h2>Criar ETP com ChatGPT</h2>
+      
+      <!-- Status de processamento -->
+      <div id="status-container" class="status-container hidden">
+        <div class="spinner"></div>
+        <span id="status-text">Processando...</span>
+      </div>
+
+      <label for="contexto">
+        Descreva a necessidade da aquisição/contratação:
+      </label>
+      <span class="contexto">
+        <textarea
+          id="contexto"
+          rows="4"
+          placeholder="Aqui você pode mencionar sua unidade/órgão, medidas como tamanhos, quantidades e frequências!"
+        ></textarea>
+        <span id="limpar" title="Limpar campo"></span>
+      </span>
+
+      <div id="paragrafos">
+        <label>
+          Quantidade de parágrafos por itens:<span id="ajuda1" class="ajuda-icon"> ?</span>
+        </label>
+        <span id="ajuda_paragrafos" class="ajuda-texto">
+          Escolha o número de parágrafos para a descrição de cada seção.
+          Lembre-se de que mais parágrafos resultam em um texto mais extenso, mas
+          isso não garante uma descrição necessariamente mais clara ou detalhada.
+        </span>
+        <br />
+        <label> <input type="radio" name="paragrafos" value="1" /> 1 </label>
+        <label> <input type="radio" name="paragrafos" value="2" /> 2 </label>
+        <label> <input type="radio" name="paragrafos" value="3" checked /> 3 </label>
+        <label> <input type="radio" name="paragrafos" value="4" /> 4 </label>
+        <label> <input type="radio" name="paragrafos" value="5" /> 5 </label>
+      </div>
+
+      <div id="tabular">
+        <label>
+          Tabular estimativa de preços:<span id="ajuda2" class="ajuda-icon"> ?</span>
+        </label>
+        <span id="ajuda_tabular" class="ajuda-texto">
+          Indique se prefere que os dados da seção VI sejam apresentados em
+          formato de tabela ou em formato de texto.
+        </span>
+        <br />
+        <label> <input type="radio" name="tabular" value="sim" checked /> Sim </label>
+        <label> <input type="radio" name="tabular" value="não" /> Não </label>
+      </div>
+
+      <div id="previsao">
+        <label>A aquisição/contratação está prevista no PCA:</label>
+        <br />
+        <label> <input type="radio" name="previsao" value="sim" checked /> Sim </label>
+        <label> <input type="radio" name="previsao" value="não" /> Não </label>
+      </div>
+
+      <div id="locacao">
+        <label>Comparar com a locação:</label>
+        <br />
+        <label> <input type="radio" name="locacao" value="sim" checked /> Sim </label>
+        <label> <input type="radio" name="locacao" value="não" /> Não </label>
+      </div>
+
+      <button id="inserir">Gerar ETP</button>
+
+      <div id="footer">
+        <p>Desenvolvido por <strong>Claudemir Andrade</strong></p>
+        <p>
+          Precisa de ajuda?
+          <a
+            href="https://mail.google.com/mail/?view=cm&fs=1&to=claudemir.andrade@usp.br"
+            target="_blank"
+          >entre em contato</a>
+        </p>
+      </div>
+      <div id="sobre">Sobre</div>
+    </div>
+    
+    <script src="sidepanel.js"></script>
+  </body>
+</html>
+
