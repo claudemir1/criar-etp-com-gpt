@@ -442,29 +442,32 @@ const Historico = {
    * Mostra modal de confirmação de exclusão
    */
   showConfirmDelete(index, item) {
-    const modal = document.getElementById('confirmModal') || this.createConfirmModal();
+    const modal =
+      document.getElementById('confirmModal') || this.createConfirmModal();
     const message = document.getElementById('confirmMessage');
-    
-    const preview = item.contexto.substring(0, 100) + (item.contexto.length > 100 ? '...' : '');
+
+    const preview =
+      item.contexto.substring(0, 100) +
+      (item.contexto.length > 100 ? '...' : '');
     message.innerHTML = `Deseja realmente excluir este ETP?<br><br><strong>"${preview}"</strong>`;
-    
+
     modal.classList.remove('hidden');
-    
+
     // Remove event listeners anteriores
     const btnCancel = document.getElementById('confirmCancel');
     const btnDelete = document.getElementById('confirmDelete');
-    
+
     const newBtnCancel = btnCancel.cloneNode(true);
     const newBtnDelete = btnDelete.cloneNode(true);
-    
+
     btnCancel.parentNode.replaceChild(newBtnCancel, btnCancel);
     btnDelete.parentNode.replaceChild(newBtnDelete, btnDelete);
-    
+
     // Novos event listeners
     newBtnCancel.addEventListener('click', () => {
       modal.classList.add('hidden');
     });
-    
+
     newBtnDelete.addEventListener('click', async () => {
       modal.classList.add('hidden');
       await this.delete(index);
@@ -495,14 +498,16 @@ const Historico = {
         </div>
       </div>
     `;
-    
+
     document.body.appendChild(modal);
-    
+
     // Click no overlay fecha o modal
-    modal.querySelector('.confirm-modal-overlay').addEventListener('click', () => {
-      modal.classList.add('hidden');
-    });
-    
+    modal
+      .querySelector('.confirm-modal-overlay')
+      .addEventListener('click', () => {
+        modal.classList.add('hidden');
+      });
+
     return modal;
   },
 

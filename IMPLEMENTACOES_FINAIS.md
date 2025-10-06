@@ -6,6 +6,7 @@
 
 **Localização:** Cada item do histórico  
 **Funcionalidade:**
+
 - ✅ Botão vermelho com ícone 🗑️
 - ✅ Hover: fica totalmente vermelho + escala
 - ✅ Click: pede confirmação
@@ -13,6 +14,7 @@
 - ✅ Cancela: mantém
 
 **Design:**
+
 ```css
 Tamanho: 32x32px
 Fundo: rgba(239,68,68,0.1) → vermelho claro
@@ -26,6 +28,7 @@ Transform: scale(1.1)
 ### **2. Barra de Progresso Corrigida** 📊
 
 **Ordem Correta:**
+
 ```
 10% - Conectando ao ChatGPT
 25% - Config salva
@@ -40,11 +43,13 @@ Transform: scale(1.1)
 ```
 
 **Antes estava:**
+
 ```
 60% → 80% → 70% ❌ (fora de ordem)
 ```
 
 **Agora:**
+
 ```
 50% → 60% → 70% → 85% → 95% → 100% ✅
 ```
@@ -54,12 +59,14 @@ Transform: scale(1.1)
 ### **3. Logs de Debug Detalhados** 🔍
 
 **Console do Side Panel:**
+
 ```javascript
 📊 Seções parseadas: 13
 📝 Seções encontradas: I, II, III, IV, V, VI, VII, VIII, IX, X, XI, XII, XIII
 ```
 
 **Console do ChatGPT:**
+
 ```javascript
 🔍 Iniciando parse de seções...
 📏 Tamanho do texto: 4523
@@ -72,6 +79,7 @@ Transform: scale(1.1)
 ```
 
 **Se algo der errado:**
+
 ```javascript
 ❌ Seção IV NÃO encontrada no texto
 ⚠️ Seção X com conteúdo muito pequeno: 5 chars
@@ -83,6 +91,7 @@ Transform: scale(1.1)
 ### **4. Parser Melhorado** 🎯
 
 **Mudanças:**
+
 - ✅ Timeout aumentado: 60 segundos
 - ✅ Verifica "XIII" + "posicionamento conclusivo"
 - ✅ Extrai de `<p>` tags (melhor formatação)
@@ -95,18 +104,20 @@ Transform: scale(1.1)
 ## 🧪 Como Testar
 
 ### **Passo 1: Recarregar**
+
 ```
 chrome://extensions/ → ↻
 Recarregar página do ChatGPT (F5)
 ```
 
 ### **Passo 2: Gerar ETP com Logs**
+
 ```
 1. Abra console do SIDE PANEL:
    - Click direito no Side Panel
    - "Inspecionar"
    - Aba Console
-   
+
 2. Abra console do CHATGPT:
    - F12 na página do ChatGPT
    - Aba Console
@@ -116,6 +127,7 @@ Recarregar página do ChatGPT (F5)
 ```
 
 ### **Passo 3: Verificar Progress Bar**
+
 ```
 Deve seguir ordem:
 10% → 25% → 40% → 50% → 60% → 70% → 85% → 95% → 100%
@@ -126,6 +138,7 @@ NÃO deve pular ou voltar!
 ### **Passo 4: Verificar Captura**
 
 **No console do ChatGPT, procure:**
+
 ```
 ✅ Resposta completa capturada!
 📏 Tamanho: XXXX caracteres
@@ -137,12 +150,14 @@ NÃO deve pular ou voltar!
 ```
 
 **No console do Side Panel:**
+
 ```
 📊 Seções parseadas: 13
 📝 Seções encontradas: I, II, III, IV, V, VI, VII, VIII, IX, X, XI, XII, XIII
 ```
 
 ### **Passo 5: Testar Botão Excluir**
+
 ```
 1. No histórico, veja botão vermelho 🗑️
 2. Passe o mouse: fica vermelho sólido
@@ -152,6 +167,7 @@ NÃO deve pular ou voltar!
 ```
 
 ### **Passo 6: Verificar Modal**
+
 ```
 1. Click "Ver Resposta"
 2. Verifique:
@@ -168,12 +184,14 @@ NÃO deve pular ou voltar!
 ### **Cenário 1: Seções Vazias**
 
 **Verificar nos logs:**
+
 ```
 ❌ Seção IV NÃO encontrada no texto
 ```
 
 **Causa:** ChatGPT formatou diferente  
 **Solução:** Me envie:
+
 - Print da resposta do ChatGPT
 - Logs do console
 - Vou ajustar o regex
@@ -181,6 +199,7 @@ NÃO deve pular ou voltar!
 ### **Cenário 2: Apenas Letra ("I", "IV")**
 
 **Verificar nos logs:**
+
 ```
 ⚠️ Seção X com conteúdo muito pequeno: 5 chars
 ```
@@ -191,6 +210,7 @@ NÃO deve pular ou voltar!
 ### **Cenário 3: Título Repetido**
 
 **Verificar:**
+
 ```
 Se conteúdo começa com "I - descrição..."
 = Parser não removeu título
@@ -203,6 +223,7 @@ Se conteúdo começa com "I - descrição..."
 ## 📊 Estrutura do Item no Histórico
 
 ### **Antes:**
+
 ```
 ┌────────────────────────────┐
 │ Computadores...            │
@@ -211,6 +232,7 @@ Se conteúdo começa com "I - descrição..."
 ```
 
 ### **Depois (com resposta):**
+
 ```
 ┌────────────────────────────┐
 │ Computadores...        🗑️  │ ← Botão excluir
@@ -225,12 +247,14 @@ Se conteúdo começa com "I - descrição..."
 ## 🎯 Checklist Completo
 
 ### Barra de Progresso
+
 - [ ] Ordem correta (10→25→40→50→60→70→85→95→100)
 - [ ] Não pula valores
 - [ ] Não volta
 - [ ] Animação fluida
 
 ### Botão Excluir
+
 - [ ] Aparece em todos itens
 - [ ] Ícone 🗑️ visível
 - [ ] Hover fica vermelho
@@ -239,6 +263,7 @@ Se conteúdo começa com "I - descrição..."
 - [ ] Lista atualiza
 
 ### Captura de Resposta
+
 - [ ] Logs aparecem no console do ChatGPT
 - [ ] Mostra "Resposta completa capturada!"
 - [ ] Parse inicia
@@ -246,6 +271,7 @@ Se conteúdo começa com "I - descrição..."
 - [ ] Conteúdos salvos
 
 ### Modal
+
 - [ ] Botões copiar pequenos
 - [ ] Títulos não repetem
 - [ ] Conteúdo completo
@@ -257,12 +283,14 @@ Se conteúdo começa com "I - descrição..."
 ## 🔍 Logs Para Observar
 
 ### **Console do Side Panel (Inspecionar):**
+
 ```
 📊 Seções parseadas: 13
 📝 Seções encontradas: I, II, III, IV, V, VI, VII, VIII, IX, X, XI, XII, XIII
 ```
 
 ### **Console do ChatGPT (F12):**
+
 ```
 ✅ Resposta completa capturada!
 📏 Tamanho: 4523 caracteres
@@ -292,16 +320,15 @@ Com os logs, vou conseguir identificar exatamente o problema e ajustar o parser!
 
 ## ✨ Resumo das Implementações
 
-| Feature | Status | Detalhes |
-|---------|--------|----------|
+| Feature           | Status          | Detalhes                             |
+| ----------------- | --------------- | ------------------------------------ |
 | **Botão Excluir** | ✅ Implementado | Vermelho, hover animado, confirmação |
-| **Progress Bar** | ✅ Corrigido | Ordem lógica 10→100 |
-| **Logs Debug** | ✅ Completos | Console Side Panel + ChatGPT |
-| **Parser** | ✅ Melhorado | Remove título, logs detalhados |
-| **Botão Copiar** | ✅ Ajustado | Pequeno e proporcional |
-| **Timeout** | ✅ 60s | Aguarda ChatGPT completar |
+| **Progress Bar**  | ✅ Corrigido    | Ordem lógica 10→100                  |
+| **Logs Debug**    | ✅ Completos    | Console Side Panel + ChatGPT         |
+| **Parser**        | ✅ Melhorado    | Remove título, logs detalhados       |
+| **Botão Copiar**  | ✅ Ajustado     | Pequeno e proporcional               |
+| **Timeout**       | ✅ 60s          | Aguarda ChatGPT completar            |
 
 ---
 
 **Teste agora e me envie os logs! Vamos finalizar isso perfeitamente!** 🚀
-
