@@ -193,9 +193,9 @@ const ChatGPT = {
         func: this.injectAndSendPrompt,
         args: [promptText],
       });
-      
+
       console.log('Resultado da injeção:', results);
-      
+
       // Verifica se houve erro
       if (results && results[0] && results[0].result) {
         if (results[0].result.error) {
@@ -210,123 +210,186 @@ const ChatGPT = {
 
   /**
    * Função injetada na página do ChatGPT
-   * Retorna objeto para melhor debugging
+   * Versão robusta com múltiplas estratégias
    */
   injectAndSendPrompt(promptText) {
-    console.log('🔍 Iniciando injeção do prompt...');
+    console.log('🚀 ========== INICIANDO INJEÇÃO DO PROMPT ==========');
+    console.log('📝 Tamanho do prompt:', promptText.length, 'caracteres');
     
-    // Encontra o campo de texto do prompt
-    const promptInput = document.getElementById('prompt-textarea');
-    
-    if (!promptInput) {
-      console.error('❌ Campo prompt-textarea não encontrado');
-      return { error: 'Campo de prompt não encontrado' };
-    }
-    
-    console.log('✅ Campo de prompt encontrado:', promptInput);
-
     try {
-      // Foca no campo
-      promptInput.focus();
-      console.log('✅ Campo focado');
+      // ESTRATÉGIA 1: Procura por ID
+      let promptInput = document.getElementById('prompt-textarea');
       
-      // Seleciona todo o conteúdo e apaga
-      const selection = window.getSelection();
-      const range = document.createRange();
-      range.selectNodeContents(promptInput);
-      selection.removeAllRanges();
-      selection.addRange(range);
-      document.execCommand('delete');
-      
-      // Insere o novo texto usando execCommand (mais compatível com contentEditable)
-      document.execCommand('insertText', false, promptText);
-      console.log('✅ Texto inserido via execCommand');
-      
-      // Fallback: se o texto não foi inserido, usa innerText
-      if (!promptInput.textContent || promptInput.textContent.trim() === '') {
-        promptInput.innerText = promptText;
-        console.log('✅ Texto inserido via innerText (fallback)');
+      // ESTRATÉGIA 2: Procura por seletor alternativo
+      if (!promptInput) {
+        console.log('⚠️ Tentando seletor alternativo...');
+        promptInput = document.querySelector('[contenteditable="true"]');
       }
       
-      // Dispara eventos de input
-      const inputEvent = new Event('input', { bubbles: true, cancelable: true });
-      promptInput.dispatchEvent(inputEvent);
-      console.log('✅ Evento input disparado');
-      
-      // Aguarda um momento para o ChatGPT processar
-      setTimeout(() => {
-        // Procura o botão de enviar
-        const sendButton = document.querySelector('button[data-testid="send-button"]') ||
-                          document.querySelector('button[aria-label="Enviar prompt"]') ||
-                          document.querySelector('button[aria-label="Send prompt"]');
-        
-        if (!sendButton) {
-          console.error('❌ Botão de enviar não encontrado');
-          console.log('Tentando procurar com outros seletores...');
-          
-          // Tenta encontrar o botão por outros métodos
-          const buttons = Array.from(document.querySelectorAll('button'));
-          const possibleButton = buttons.find(btn => {
-            const svg = btn.querySelector('svg');
-            return svg && !btn.disabled;
-          });
-          
-          if (possibleButton) {
-            console.log('✅ Botão encontrado por método alternativo');
-            possibleButton.click();
-            console.log('✅ Botão clicado!');
-          } else {
-            return { error: 'Botão de enviar não encontrado' };
-          }
-        } else {
-          console.log('✅ Botão de enviar encontrado:', sendButton);
-          
-          // Aguarda o botão ficar habilitado
-          const checkAndClick = () => {
-            if (!sendButton.disabled) {
-              sendButton.click();
-              console.log('✅ Botão clicado!');
-              
-              // Remove o artigo do prompt após envio
-              setTimeout(() => {
-                const articles = document.querySelectorAll('article');
-                articles.forEach(article => {
-                  if (article.textContent.includes('Atue como demandante')) {
-                    article.remove();
-                    console.log('✅ Artigo do prompt removido');
-                  }
-                });
-              }, 2000);
-              
-              return true;
-            }
-            return false;
-          };
-          
-          // Tenta clicar imediatamente
-          if (!checkAndClick()) {
-            console.log('⏳ Aguardando botão ficar habilitado...');
-            
-            // Usa polling como fallback
-            let attempts = 0;
-            const interval = setInterval(() => {
-              attempts++;
-              if (checkAndClick() || attempts > 30) {
-                clearInterval(interval);
-                if (attempts > 30) {
-                  console.error('❌ Timeout: botão não ficou habilitado');
-                }
-              }
-            }, 500);
+      // ESTRATÉGIA 3: Procura por placeholder
+      if (!promptInput) {
+        console.log('⚠️ Tentando por placeholder...');
+        const elements = document.querySelectorAll('[contenteditable="true"]');
+        for (const el of elements) {
+          if (el.getAttribute('placeholder')?.includes('Mensagem') || 
+              el.getAttribute('placeholder')?.includes('Message')) {
+            promptInput = el;
+            break;
           }
         }
-      }, 300);
+      }
       
-      return { success: true };
+      if (!promptInput) {
+        console.error('❌ ERRO: Campo de prompt não encontrado em nenhuma estratégia');
+        console.log('🔍 Debug - contenteditable elements:', 
+          document.querySelectorAll('[contenteditable="true"]').length);
+        return { error: 'Campo de prompt não encontrado' };
+      }
+      
+      console.log('✅ Campo de prompt encontrado!');
+      console.log('📍 Tag:', promptInput.tagName);
+      console.log('📍 ID:', promptInput.id);
+      console.log('📍 ContentEditable:', promptInput.contentEditable);
+      
+      // Limpa o campo primeiro
+      promptInput.innerHTML = '';
+      promptInput.textContent = '';
+      promptInput.innerText = '';
+      console.log('🧹 Campo limpo');
+      
+      // Foca no campo
+      promptInput.focus();
+      promptInput.click();
+      console.log('🎯 Campo focado');
+      
+      // MÉTODO 1: Tenta com execCommand (melhor para contenteditable)
+      try {
+        const success = document.execCommand('insertText', false, promptText);
+        console.log('📝 execCommand insertText:', success ? '✅ Sucesso' : '❌ Falhou');
+      } catch (e) {
+        console.warn('⚠️ execCommand não funcionou:', e.message);
+      }
+      
+      // MÉTODO 2: Fallback com innerText
+      if (!promptInput.textContent || promptInput.textContent.trim() === '') {
+        console.log('🔄 Usando fallback innerText...');
+        promptInput.innerText = promptText;
+        console.log('✅ Texto inserido via innerText');
+      }
+      
+      // Verifica se o texto foi inserido
+      console.log('✔️ Conteúdo atual (primeiros 100 chars):', 
+        promptInput.textContent.substring(0, 100) + '...');
+      
+      // Dispara TODOS os eventos possíveis
+      const events = ['input', 'change', 'keydown', 'keyup', 'keypress'];
+      events.forEach(eventType => {
+        const event = new Event(eventType, { bubbles: true, cancelable: true });
+        promptInput.dispatchEvent(event);
+      });
+      console.log('📡 Eventos disparados:', events.join(', '));
+      
+      // Aguarda e procura o botão
+      setTimeout(() => {
+        console.log('🔍 Procurando botão de enviar...');
+        
+        // Lista de seletores para tentar
+        const selectors = [
+          'button[data-testid="send-button"]',
+          'button[aria-label="Enviar prompt"]',
+          'button[aria-label="Send prompt"]',
+          'button[data-testid="fruitjuice-send-button"]',
+          'button svg[data-icon="arrow-up"]',
+        ];
+        
+        let sendButton = null;
+        
+        for (const selector of selectors) {
+          sendButton = document.querySelector(selector);
+          if (sendButton) {
+            if (sendButton.tagName !== 'BUTTON') {
+              sendButton = sendButton.closest('button');
+            }
+            console.log('✅ Botão encontrado com seletor:', selector);
+            break;
+          }
+        }
+        
+        // Fallback: procura botão com SVG no footer
+        if (!sendButton) {
+          console.log('⚠️ Tentando método alternativo para encontrar botão...');
+          const buttons = Array.from(document.querySelectorAll('button'));
+          console.log('🔢 Total de botões na página:', buttons.length);
+          
+          sendButton = buttons.find(btn => {
+            const hasSvg = btn.querySelector('svg');
+            const isInForm = btn.closest('form');
+            const notDisabled = !btn.disabled;
+            return hasSvg && isInForm && notDisabled;
+          });
+          
+          if (sendButton) {
+            console.log('✅ Botão encontrado por método alternativo!');
+          }
+        }
+        
+        if (!sendButton) {
+          console.error('❌ ERRO: Botão de enviar não encontrado');
+          console.log('💡 Dica: A página do ChatGPT pode ter mudado. Verifique se você está logado.');
+          return { error: 'Botão de enviar não encontrado' };
+        }
+        
+        console.log('🎯 Botão encontrado:', {
+          disabled: sendButton.disabled,
+          tagName: sendButton.tagName,
+          ariaLabel: sendButton.getAttribute('aria-label')
+        });
+        
+        // Função para clicar quando possível
+        const tryClick = (attempt = 0) => {
+          if (attempt > 50) {
+            console.error('❌ Timeout: Botão nunca ficou habilitado');
+            return;
+          }
+          
+          if (!sendButton.disabled) {
+            console.log('✅ Botão habilitado! Clicando...');
+            sendButton.click();
+            console.log('🚀 PROMPT ENVIADO COM SUCESSO!');
+            console.log('🎉 ========== FIM DA INJEÇÃO ==========');
+            
+            // Remove o artigo após envio
+            setTimeout(() => {
+              const articles = document.querySelectorAll('article');
+              let removed = 0;
+              articles.forEach(article => {
+                if (article.textContent.includes('Atue como demandante')) {
+                  article.remove();
+                  removed++;
+                }
+              });
+              if (removed > 0) {
+                console.log('🗑️ Artigo(s) do prompt removido(s):', removed);
+              }
+            }, 2000);
+            
+            return;
+          }
+          
+          console.log(`⏳ Tentativa ${attempt + 1}/50 - Aguardando botão habilitar...`);
+          setTimeout(() => tryClick(attempt + 1), 300);
+        };
+        
+        tryClick();
+        
+      }, 500);
+      
+      return { success: true, message: 'Prompt injetado com sucesso' };
       
     } catch (error) {
-      console.error('❌ Erro ao processar prompt:', error);
-      return { error: error.message };
+      console.error('❌ ERRO CRÍTICO:', error);
+      console.error('Stack:', error.stack);
+      return { error: error.message, stack: error.stack };
     }
   },
 };
