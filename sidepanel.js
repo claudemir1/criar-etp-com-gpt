@@ -168,7 +168,7 @@ const Historico = {
     // Preenche os campos com a configuração do histórico
     const contextoField = document.getElementById('contexto');
     contextoField.value = config.contexto;
-    
+
     document.querySelector(
       `input[name="paragrafos"][value="${config.paragrafos}"]`
     ).checked = true;
@@ -184,7 +184,7 @@ const Historico = {
 
     // Auto-resize do textarea após carregar
     Utils.autoResizeTextarea(contextoField);
-    
+
     // Mostra botão limpar
     const limparBtn = document.getElementById('limpar');
     if (limparBtn && config.contexto) {
@@ -304,6 +304,14 @@ const Utils = {
    * Auto-resize do textarea
    */
   autoResizeTextarea(textarea) {
+    if (!textarea) return;
+    
+    // Se o campo está vazio, define altura mínima
+    if (!textarea.value || textarea.value.trim() === '') {
+      textarea.style.height = '80px';
+      return;
+    }
+    
     // Reset altura para calcular a altura correta
     textarea.style.height = 'auto';
     
@@ -718,10 +726,10 @@ const Storage = {
 
       if (result.contexto && contextoField) {
         contextoField.value = result.contexto;
-        
+
         // Auto-resize após carregar
         Utils.autoResizeTextarea(contextoField);
-        
+
         if (limparBtn) {
           limparBtn.style.display = 'block';
         }
@@ -782,8 +790,8 @@ const EventHandlers = {
     // Campo de contexto
     const contextoField = document.getElementById('contexto');
     if (contextoField) {
-      // Auto-resize inicial
-      Utils.autoResizeTextarea(contextoField);
+      // Define altura inicial pequena (3 linhas)
+      contextoField.style.height = '80px';
       
       contextoField.addEventListener('input', e => {
         const limparBtn = document.getElementById('limpar');
