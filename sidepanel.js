@@ -382,13 +382,14 @@ const Historico = {
         return `
         <div class="historico-item-wrapper">
           <div class="historico-item" data-index="${index}">
-            <div class="historico-item-header">
-              <div class="historico-item-info">
-                <div class="historico-item-desc">${preview}</div>
-                <div class="historico-item-date">📅 ${dateStr}</div>
-              </div>
+            <div class="historico-item-desc">${preview}</div>
+            <div class="historico-item-date">
+              📅 ${dateStr}
               <button class="btn-excluir-etp" data-index="${index}" title="Excluir ETP">
-                🗑️
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14">
+                  <path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                </svg>
+                Excluir
               </button>
             </div>
           </div>
@@ -431,12 +432,77 @@ const Historico = {
       btn.addEventListener('click', async e => {
         e.stopPropagation();
         const index = parseInt(e.currentTarget.dataset.index);
-
-        if (confirm('Tem certeza que deseja excluir este ETP do histórico?')) {
-          await this.delete(index);
-        }
+        this.showConfirmDelete(index, historico[index]);
       });
     });
+  },
+
+  /**
+   * Mostra modal de confirmação de exclusão
+   */
+  showConfirmDelete(index, item) {
+    const modal = document.getElementById('confirmModal') || this.createConfirmModal();
+    const message = document.getElementById('confirmMessage');
+    
+    const preview = item.contexto.substring(0, 100) + (item.contexto.length > 100 ? '...' : '');
+    message.innerHTML = `Deseja realmente excluir este ETP?<br><br><strong>"${preview}"</strong>`;
+    
+    modal.classList.remove('hidden');
+    
+    // Remove event listeners anteriores
+    const btnCancel = document.getElementById('confirmCancel');
+    const btnDelete = document.getElementById('confirmDelete');
+    
+    const newBtnCancel = btnCancel.cloneNode(true);
+    const newBtnDelete = btnDelete.cloneNode(true);
+    
+    btnCancel.parentNode.replaceChild(newBtnCancel, btnCancel);
+    btnDelete.parentNode.replaceChild(newBtnDelete, btnDelete);
+    
+    // Novos event listeners
+    newBtnCancel.addEventListener('click', () => {
+      modal.classList.add('hidden');
+    });
+    
+    newBtnDelete.addEventListener('click', async () => {
+      modal.classList.add('hidden');
+      await this.delete(index);
+    });
+  },
+
+  /**
+   * Cria modal de confirmação
+   */
+  createConfirmModal() {
+    const modal = document.createElement('div');
+    modal.id = 'confirmModal';
+    modal.className = 'confirm-modal hidden';
+    modal.innerHTML = `
+      <div class="confirm-modal-overlay"></div>
+      <div class="confirm-modal-content">
+        <div class="confirm-modal-title">
+          ⚠️ Confirmar Exclusão
+        </div>
+        <div class="confirm-modal-message" id="confirmMessage"></div>
+        <div class="confirm-modal-buttons">
+          <button class="confirm-modal-btn confirm-modal-btn-cancel" id="confirmCancel">
+            Cancelar
+          </button>
+          <button class="confirm-modal-btn confirm-modal-btn-delete" id="confirmDelete">
+            Excluir
+          </button>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Click no overlay fecha o modal
+    modal.querySelector('.confirm-modal-overlay').addEventListener('click', () => {
+      modal.classList.add('hidden');
+    });
+    
+    return modal;
   },
 
   /**
@@ -1335,7 +1401,9 @@ const EventHandlers = {
       await ChatGPT.sendPrompt(tabId, promptText);
 
       // Aguarda e captura a resposta
-      Utils.showStatus('Aguardando resposta do ChatGPT... (pode demorar 1-2 min)');
+      Utils.showStatus(
+        'Aguardando resposta do ChatGPT... (pode demorar 1-2 min)'
+      );
       const respostaResult = await Historico.captureResponse(tabId);
 
       // Parseia as seções se capturou a resposta
