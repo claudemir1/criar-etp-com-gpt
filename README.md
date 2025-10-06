@@ -47,28 +47,33 @@ A ferramenta gera ETPs completos com as 13 seções obrigatórias, conforme a le
 ## 🛠️ Tecnologias Utilizadas
 
 ### Frontend
+
 - **HTML5** - Estrutura semântica
 - **CSS3** - Estilização moderna com variáveis CSS
 - **JavaScript (ES6+)** - Lógica da aplicação
 
 ### APIs do Chrome
+
 - **Chrome Extension Manifest V3** - Última versão da API de extensões
 - **Chrome Side Panel API** - Interface lateral
 - **Chrome Storage API** - Persistência de dados local
 - **Chrome Scripting API** - Injeção de scripts no ChatGPT
 
 ### Ferramentas
+
 - **Git** - Controle de versão
 - **GitHub** - Hospedagem do código
 
 ## 🎨 Design System
 
 ### Paleta de Cores
+
 - **Primary**: `#1094ab` (Azul Turquesa)
 - **Secondary**: `#64c4d2` (Azul Claro)
 - **Accent**: `#fcb421` (Amarelo)
 
 ### Características
+
 - Modo escuro automático baseado nas preferências do sistema
 - Toggle manual de tema
 - Animações suaves com `cubic-bezier`
@@ -78,10 +83,12 @@ A ferramenta gera ETPs completos com as 13 seções obrigatórias, conforme a le
 ## ⚙️ Instalação e Uso
 
 ### Requisitos
+
 - Google Chrome versão 88 ou superior
 - Conta ativa no ChatGPT (https://chatgpt.com)
 
 ### Instalação via Chrome Web Store
+
 1. Acesse a [Chrome Web Store](#) (em breve)
 2. Clique em "Adicionar ao Chrome"
 3. Confirme a instalação
@@ -89,12 +96,14 @@ A ferramenta gera ETPs completos com as 13 seções obrigatórias, conforme a le
 ### Instalação Manual (Desenvolvedor)
 
 1. **Clone o repositório**
+
 ```bash
 git clone https://github.com/claudemir1/criar-etp-com-gpt.git
 cd criar-etp-com-gpt
 ```
 
 2. **Carregue a extensão no Chrome**
+
    - Abra o Chrome e acesse `chrome://extensions/`
    - Ative o "Modo do desenvolvedor" no canto superior direito
    - Clique em "Carregar sem compactação"
@@ -174,12 +183,14 @@ Encontrou um bug? Por favor, [abra uma issue](https://github.com/claudemir1/cria
 ## 💡 Roadmap
 
 ### Versão 2.2 (Planejado)
+
 - [ ] Exportar ETP para PDF
 - [ ] Exportar ETP para Word (.docx)
 - [ ] Templates customizáveis
 - [ ] Sincronização entre dispositivos
 
 ### Versão 3.0 (Futuro)
+
 - [ ] Suporte para outros idiomas
 - [ ] Integração com Google Drive
 - [ ] Modo colaborativo
@@ -219,8 +230,8 @@ MIT License - Copyright (c) 2025 Claudemir Andrade
 
 **⭐ Se este projeto te ajudou, considere dar uma estrela!**
 
-[Reportar Bug](https://github.com/claudemir1/criar-etp-com-gpt/issues) • 
-[Solicitar Feature](https://github.com/claudemir1/criar-etp-com-gpt/issues) • 
+[Reportar Bug](https://github.com/claudemir1/criar-etp-com-gpt/issues) •
+[Solicitar Feature](https://github.com/claudemir1/criar-etp-com-gpt/issues) •
 [Documentação](https://github.com/claudemir1/criar-etp-com-gpt/wiki)
 
 </div>

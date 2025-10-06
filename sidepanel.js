@@ -1429,8 +1429,125 @@ const EventHandlers = {
 };
 
 // ========================================
+// SISTEMA DE BOAS-VINDAS / NOVIDADES
+// ========================================
+const WelcomeSystem = {
+  async init() {
+    const result = await chrome.storage.local.get(['showWelcome', 'showWhatsNew', 'version', 'previousVersion']);
+    
+    if (result.showWelcome) {
+      this.showWelcomeModal();
+    } else if (result.showWhatsNew) {
+      this.showWhatsNewModal(result.previousVersion, result.version);
+    }
+  },
+
+  showWelcomeModal() {
+    const content = `
+      <h1><span>🎉</span> Bem-vindo ao Criar ETP com ChatGPT!</h1>
+      <span class="welcome-version">v2.1</span>
+      
+      <p>Obrigado por instalar nossa extensão! Agora você pode criar Estudos Técnicos Preliminares de forma rápida e eficiente.</p>
+      
+      <h2>✨ Principais Funcionalidades</h2>
+      <ul>
+        <li><strong>Side Panel Integrado:</strong> Interface lateral que permite visualizar a extensão e o ChatGPT simultaneamente</li>
+        <li><strong>13 Seções Completas:</strong> Gera todas as seções obrigatórias do ETP automaticamente</li>
+        <li><strong>Histórico Inteligente:</strong> Salva os últimos 5 ETPs com respostas organizadas por seção</li>
+        <li><strong>Modo Escuro:</strong> Tema claro/escuro automático com toggle manual</li>
+        <li><strong>Copiar por Seção:</strong> Copie cada seção individualmente ou o documento completo</li>
+      </ul>
+      
+      <h2>🚀 Como Começar</h2>
+      <ul>
+        <li>Abra o <strong>ChatGPT</strong> (https://chatgpt.com)</li>
+        <li>Clique no <strong>ícone da extensão</strong> para abrir o painel lateral</li>
+        <li>Preencha o <strong>contexto</strong> da sua necessidade</li>
+        <li>Configure as <strong>opções</strong> e clique em "Gerar ETP"</li>
+        <li>Use o botão <strong>"Ver Resposta Completa"</strong> para acessar o ETP organizado</li>
+      </ul>
+      
+      <div class="welcome-actions">
+        <button class="welcome-btn welcome-btn-secondary" id="btnCloseWelcome">Entendi</button>
+        <button class="welcome-btn welcome-btn-primary" id="btnGetStarted">Começar Agora</button>
+      </div>
+    `;
+    
+    this.showModal(content);
+    chrome.storage.local.remove('showWelcome');
+  },
+
+  showWhatsNewModal(previousVersion, currentVersion) {
+    const content = `
+      <h1><span>🎊</span> Nova Versão Disponível!</h1>
+      <span class="welcome-version">${previousVersion} → ${currentVersion}</span>
+      
+      <p>A extensão foi atualizada com melhorias e novos recursos!</p>
+      
+      <h2>✨ Novidades da v2.1</h2>
+      <ul>
+        <li><strong>Interface Redesenhada:</strong> Design moderno com cores turquesa e amarelo</li>
+        <li><strong>Radio Buttons Animados:</strong> Nova experiência visual com animações suaves</li>
+        <li><strong>Botões com Alto Contraste:</strong> Melhor legibilidade (amarelo → azul no hover)</li>
+        <li><strong>Background Uniforme:</strong> Cores sólidas sem gradiente (melhor performance)</li>
+        <li><strong>Textarea Auto-resize:</strong> Ajuste automático corrigido ao carregar histórico</li>
+        <li><strong>Footer Profissional:</strong> Card elegante com versão e links sociais</li>
+        <li><strong>Modal de Boas-vindas:</strong> Sistema de notificações para novos usuários</li>
+      </ul>
+      
+      <h2>🐛 Correções</h2>
+      <ul>
+        <li>Corrigido problema de textarea grande ao abrir com texto salvo</li>
+        <li>Melhorado contraste dos botões e ícones</li>
+        <li>Otimizado desempenho geral da extensão</li>
+      </ul>
+      
+      <div class="welcome-actions">
+        <button class="welcome-btn welcome-btn-secondary" id="btnCloseWelcome">Fechar</button>
+        <button class="welcome-btn welcome-btn-primary" id="btnGetStarted">Testar Agora</button>
+      </div>
+    `;
+    
+    this.showModal(content);
+    chrome.storage.local.remove('showWhatsNew');
+  },
+
+  showModal(htmlContent) {
+    const modal = document.getElementById('welcomeModal');
+    const contentDiv = document.getElementById('welcomeContent');
+    
+    contentDiv.innerHTML = htmlContent;
+    modal.style.display = 'flex';
+    
+    // Event listeners para fechar
+    const closeBtn = document.getElementById('closeWelcome');
+    const btnClose = document.getElementById('btnCloseWelcome');
+    const btnGetStarted = document.getElementById('btnGetStarted');
+    const overlay = modal.querySelector('.welcome-modal-overlay');
+    
+    const closeModal = () => {
+      modal.style.display = 'none';
+    };
+    
+    closeBtn.addEventListener('click', closeModal);
+    btnClose.addEventListener('click', closeModal);
+    overlay.addEventListener('click', closeModal);
+    
+    btnGetStarted.addEventListener('click', () => {
+      closeModal();
+      // Foca no campo de contexto
+      const contextoField = document.getElementById('contexto');
+      if (contextoField) {
+        contextoField.focus();
+      }
+    });
+  }
+};
+
+// ========================================
 // INICIALIZAÇÃO
 // ========================================
 document.addEventListener('DOMContentLoaded', () => {
   EventHandlers.init();
+  WelcomeSystem.init();
 });
