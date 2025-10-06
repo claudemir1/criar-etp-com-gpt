@@ -32,34 +32,38 @@ const state = {
 const DarkMode = {
   init() {
     // Detecta preferência do sistema
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const prefersDark = window.matchMedia(
+      '(prefers-color-scheme: dark)'
+    ).matches;
     const savedTheme = localStorage.getItem('theme');
-    
+
     if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
       document.body.classList.add('dark-mode');
       this.updateToggle(true);
     }
-    
+
     // Event listener para mudança de preferência do sistema
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-      if (!localStorage.getItem('theme')) {
-        if (e.matches) {
-          document.body.classList.add('dark-mode');
-          this.updateToggle(true);
-        } else {
-          document.body.classList.remove('dark-mode');
-          this.updateToggle(false);
+    window
+      .matchMedia('(prefers-color-scheme: dark)')
+      .addEventListener('change', e => {
+        if (!localStorage.getItem('theme')) {
+          if (e.matches) {
+            document.body.classList.add('dark-mode');
+            this.updateToggle(true);
+          } else {
+            document.body.classList.remove('dark-mode');
+            this.updateToggle(false);
+          }
         }
-      }
-    });
+      });
   },
-  
+
   toggle() {
     const isDark = document.body.classList.toggle('dark-mode');
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
     this.updateToggle(isDark);
   },
-  
+
   updateToggle(isDark) {
     const toggle = document.getElementById('darkModeToggle');
     const icon = document.getElementById('themeIcon');
@@ -72,7 +76,7 @@ const DarkMode = {
         icon.textContent = '☀️';
       }
     }
-  }
+  },
 };
 
 // ========================================
@@ -88,11 +92,11 @@ const Historico = {
       return [];
     }
   },
-  
+
   async save(item) {
     try {
       let historico = await this.load();
-      
+
       // Adiciona novo item no início
       historico.unshift({
         contexto: item.contexto,
@@ -100,76 +104,89 @@ const Historico = {
         tabular: item.tabular,
         previsao: item.previsao,
         locacao: item.locacao,
-        date: new Date().toISOString()
+        date: new Date().toISOString(),
       });
-      
+
       // Mantém apenas os últimos CONFIG.MAX_HISTORY itens
       if (historico.length > CONFIG.MAX_HISTORY) {
         historico = historico.slice(0, CONFIG.MAX_HISTORY);
       }
-      
+
       await chrome.storage.local.set({ historico });
       this.render();
     } catch (error) {
       console.error('Erro ao salvar histórico:', error);
     }
   },
-  
+
   async render() {
     const historico = await this.load();
     const list = document.getElementById('historicoList');
-    
+
     if (!list) return;
-    
+
     if (historico.length === 0) {
-      list.innerHTML = '<div class="historico-empty">Nenhum ETP gerado ainda. Crie seu primeiro!</div>';
+      list.innerHTML =
+        '<div class="historico-empty">Nenhum ETP gerado ainda. Crie seu primeiro!</div>';
       return;
     }
-    
-    list.innerHTML = historico.map((item, index) => {
-      const date = new Date(item.date);
-      const dateStr = date.toLocaleDateString('pt-BR', { 
-        day: '2-digit', 
-        month: '2-digit', 
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-      
-      const preview = item.contexto.substring(0, 50) + (item.contexto.length > 50 ? '...' : '');
-      
-      return `
+
+    list.innerHTML = historico
+      .map((item, index) => {
+        const date = new Date(item.date);
+        const dateStr = date.toLocaleDateString('pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+
+        const preview =
+          item.contexto.substring(0, 50) +
+          (item.contexto.length > 50 ? '...' : '');
+
+        return `
         <div class="historico-item" data-index="${index}">
           <div class="historico-item-desc">${preview}</div>
           <div class="historico-item-date">📅 ${dateStr}</div>
         </div>
       `;
-    }).join('');
-    
+      })
+      .join('');
+
     // Adiciona event listeners
     document.querySelectorAll('.historico-item').forEach(item => {
-      item.addEventListener('click', (e) => {
+      item.addEventListener('click', e => {
         const index = parseInt(e.currentTarget.dataset.index);
         this.loadConfig(historico[index]);
       });
     });
   },
-  
+
   loadConfig(config) {
     // Preenche os campos com a configuração do histórico
     document.getElementById('contexto').value = config.contexto;
-    document.querySelector(`input[name="paragrafos"][value="${config.paragrafos}"]`).checked = true;
-    document.querySelector(`input[name="tabular"][value="${config.tabular}"]`).checked = true;
-    document.querySelector(`input[name="previsao"][value="${config.previsao}"]`).checked = true;
-    document.querySelector(`input[name="locacao"][value="${config.locacao}"]`).checked = true;
-    
+    document.querySelector(
+      `input[name="paragrafos"][value="${config.paragrafos}"]`
+    ).checked = true;
+    document.querySelector(
+      `input[name="tabular"][value="${config.tabular}"]`
+    ).checked = true;
+    document.querySelector(
+      `input[name="previsao"][value="${config.previsao}"]`
+    ).checked = true;
+    document.querySelector(
+      `input[name="locacao"][value="${config.locacao}"]`
+    ).checked = true;
+
     // Atualiza badges e botão
     Utils.updateSubmitButton();
     Badges.update();
-    
+
     // Scroll para o topo
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
+  },
 };
 
 // ========================================
@@ -179,20 +196,28 @@ const Badges = {
   update() {
     const container = document.getElementById('badgesContainer');
     if (!container) return;
-    
+
     const contexto = document.getElementById('contexto')?.value.trim();
-    const paragrafos = document.querySelector('input[name="paragrafos"]:checked')?.value;
-    const tabular = document.querySelector('input[name="tabular"]:checked')?.value;
-    const previsao = document.querySelector('input[name="previsao"]:checked')?.value;
-    const locacao = document.querySelector('input[name="locacao"]:checked')?.value;
-    
+    const paragrafos = document.querySelector(
+      'input[name="paragrafos"]:checked'
+    )?.value;
+    const tabular = document.querySelector(
+      'input[name="tabular"]:checked'
+    )?.value;
+    const previsao = document.querySelector(
+      'input[name="previsao"]:checked'
+    )?.value;
+    const locacao = document.querySelector(
+      'input[name="locacao"]:checked'
+    )?.value;
+
     if (!contexto && !paragrafos) {
       container.innerHTML = '';
       return;
     }
-    
+
     let badges = [];
-    
+
     if (paragrafos) {
       badges.push(`
         <div class="badge">
@@ -203,7 +228,7 @@ const Badges = {
         </div>
       `);
     }
-    
+
     if (tabular) {
       badges.push(`
         <div class="badge">
@@ -211,7 +236,7 @@ const Badges = {
         </div>
       `);
     }
-    
+
     if (previsao) {
       badges.push(`
         <div class="badge">
@@ -219,7 +244,7 @@ const Badges = {
         </div>
       `);
     }
-    
+
     if (locacao) {
       badges.push(`
         <div class="badge">
@@ -227,9 +252,9 @@ const Badges = {
         </div>
       `);
     }
-    
+
     container.innerHTML = badges.join('');
-  }
+  },
 };
 
 // ========================================
@@ -243,7 +268,7 @@ const ProgressBar = {
       this.setProgress(0);
     }
   },
-  
+
   hide() {
     const container = document.getElementById('progressContainer');
     if (container) {
@@ -251,13 +276,13 @@ const ProgressBar = {
       this.setProgress(0);
     }
   },
-  
+
   setProgress(percent) {
     const fill = document.getElementById('progressFill');
     if (fill) {
       fill.style.width = `${percent}%`;
     }
-  }
+  },
 };
 
 // ========================================
@@ -712,10 +737,10 @@ const EventHandlers = {
   init() {
     // Inicializa Dark Mode
     DarkMode.init();
-    
+
     // Inicializa Histórico
     Historico.render();
-    
+
     // Carrega contexto salvo
     Storage.loadContext();
 
@@ -810,7 +835,13 @@ const EventHandlers = {
       ).value;
 
       // Salva configuração atual
-      const config = { contexto, paragrafos: paragr, tabular, previsao, locacao };
+      const config = {
+        contexto,
+        paragrafos: paragr,
+        tabular,
+        previsao,
+        locacao,
+      };
 
       ProgressBar.setProgress(25);
 
@@ -850,14 +881,14 @@ const EventHandlers = {
       ProgressBar.setProgress(100);
 
       Utils.showStatus('ETP gerado com sucesso! 🎉');
-      
+
       // Animação de sucesso
       const button = document.getElementById('inserir');
       if (button) {
         button.classList.add('success-animation');
         setTimeout(() => button.classList.remove('success-animation'), 600);
       }
-      
+
       setTimeout(() => {
         Utils.hideStatus();
         ProgressBar.hide();

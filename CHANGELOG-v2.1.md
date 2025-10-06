@@ -5,11 +5,13 @@
 ### 🎨 **1. Cores Personalizadas (Turquesa + Amarelo)**
 
 **Novas Cores:**
+
 - **Primary**: `#1094ab` (Turquesa escuro)
-- **Secondary**: `#64c4d2` (Turquesa claro)  
+- **Secondary**: `#64c4d2` (Turquesa claro)
 - **Accent**: `#fcb421` (Amarelo vibrante)
 
 **Implementação:**
+
 - CSS Variables (`--primary`, `--secondary`, `--accent`)
 - Gradientes dinâmicos
 - Fácil customização
@@ -19,6 +21,7 @@
 ### 🌙 **2. Modo Escuro Automático + Toggle**
 
 **Funcionalidades:**
+
 - ✅ Detecção automática de preferência do sistema
 - ✅ Toggle manual com animação suave
 - ✅ Ícones: ☀️ (light) e 🌙 (dark)
@@ -27,6 +30,7 @@
 - ✅ Transições suaves entre temas (0.3s)
 
 **Temas:**
+
 ```
 Light Mode:
 - Fundo: Gradiente turquesa
@@ -44,6 +48,7 @@ Dark Mode:
 ### 📚 **3. Histórico de ETPs**
 
 **Funcionalidades:**
+
 - ✅ Salva últimos 5 ETPs automaticamente
 - ✅ Mostra preview (50 caracteres) + data/hora
 - ✅ Click em item para recarregar configuração
@@ -52,6 +57,7 @@ Dark Mode:
 - ✅ Armazenamento via `chrome.storage.local`
 
 **Formato Armazenado:**
+
 ```javascript
 {
   contexto: "texto...",
@@ -68,12 +74,14 @@ Dark Mode:
 ### 🎯 **4. Badges Dinâmicas de Configuração**
 
 **Funcionalidades:**
+
 - ✅ Atualização em tempo real
 - ✅ Mostra resumo da configuração atual
 - ✅ Design moderno com gradientes
 - ✅ Ícones SVG inline
 
 **Badges Exibidas:**
+
 - 🔢 Quantidade de parágrafos
 - 📊 Tabular (Sim/Não)
 - ✅ PCA (Sim/Não)
@@ -84,6 +92,7 @@ Dark Mode:
 ### 📊 **5. Progress Bar Animada**
 
 **Funcionalidades:**
+
 - ✅ Gradiente tricolor animado (turquesa → amarelo)
 - ✅ 6 etapas de progresso:
   - 10% - Conectando
@@ -101,6 +110,7 @@ Dark Mode:
 ### ✨ **6. Ícones SVG em Todos os Campos**
 
 **Ícones Adicionados:**
+
 - 📝 Descrição da necessidade
 - 🔢 Quantidade de parágrafos
 - 📊 Tabular estimativa
@@ -109,6 +119,7 @@ Dark Mode:
 - 🕐 Histórico de ETPs
 
 **Implementação:**
+
 - Inline SVG no HTML
 - Preenchimento dinâmico com `var(--primary)`
 - Tamanho consistente (18px/20px)
@@ -118,13 +129,15 @@ Dark Mode:
 ### 🎉 **7. Animações e Melhorias UX**
 
 **Novas Animações:**
+
 - ✅ **Success Pulse**: Botão pulsa ao gerar ETP com sucesso
 - ✅ **Smooth Scroll**: Navegação suave (`scroll-behavior: smooth`)
 - ✅ **Hover Effects**: Cards elevam com sombra
 - ✅ **Slide In**: Status container entra com escala
-- ✅ **Transform Translateção: Histórico desliza no hover
+- ✅ \*\*Transform Translateção: Histórico desliza no hover
 
 **Transições:**
+
 - Todas com `cubic-bezier(0.4, 0, 0.2, 1)`
 - Duração otimizada (0.2s - 0.4s)
 - GPU-accelerated (`transform` ao invés de `top/left`)
@@ -134,6 +147,7 @@ Dark Mode:
 ### 🔧 **Melhorias Técnicas**
 
 **Arquitetura:**
+
 ```javascript
 // Novos Módulos:
 - DarkMode: Gerenciamento de tema
@@ -143,12 +157,14 @@ Dark Mode:
 ```
 
 **Performance:**
+
 - CSS Variables para theming instantâneo
 - Lazy rendering do histórico
 - Event delegation onde possível
 - Debounce implícito em inputs
 
 **Código:**
+
 - +260 linhas de novas funcionalidades
 - Modularização completa
 - JSDoc comments
@@ -158,31 +174,34 @@ Dark Mode:
 
 ## 📊 Comparação v2.0 → v2.1
 
-| Recurso | v2.0 | v2.1 |
-|---------|------|------|
-| **Cores** | Roxo/Azul | Turquesa/Amarelo ✨ |
-| **Dark Mode** | ❌ | ✅ Automático + Toggle |
-| **Histórico** | ❌ | ✅ 5 ETPs salvos |
-| **Badges** | ❌ | ✅ Dinâmicas |
-| **Progress** | Spinner | Barra + 6 etapas ✨ |
-| **Ícones SVG** | ❌ | ✅ Todos os campos |
-| **Animações** | Básicas | 7+ tipos ✨ |
-| **Feedback** | Bom | Excelente ✨ |
+| Recurso        | v2.0      | v2.1                   |
+| -------------- | --------- | ---------------------- |
+| **Cores**      | Roxo/Azul | Turquesa/Amarelo ✨    |
+| **Dark Mode**  | ❌        | ✅ Automático + Toggle |
+| **Histórico**  | ❌        | ✅ 5 ETPs salvos       |
+| **Badges**     | ❌        | ✅ Dinâmicas           |
+| **Progress**   | Spinner   | Barra + 6 etapas ✨    |
+| **Ícones SVG** | ❌        | ✅ Todos os campos     |
+| **Animações**  | Básicas   | 7+ tipos ✨            |
+| **Feedback**   | Bom       | Excelente ✨           |
 
 ---
 
 ## 🚀 Como Testar
 
 ### 1. Recarregar Extensão
+
 ```
 chrome://extensions/ → ↻ Recarregar
 ```
 
 ### 2. Testar Dark Mode
+
 - **Auto**: Mude preferência do sistema
 - **Manual**: Clique no toggle ☀️/🌙 no canto superior direito
 
 ### 3. Testar Histórico
+
 1. Gere um ETP
 2. Preencha campos diferentes
 3. Gere outro ETP
@@ -191,12 +210,14 @@ chrome://extensions/ → ↻ Recarregar
 6. Campos são preenchidos automaticamente!
 
 ### 4. Testar Progress Bar
+
 1. Preencha formulário
 2. Clique "Gerar ETP"
 3. Observe barra preenchendo de 0% → 100%
 4. Veja gradiente animado fluindo
 
 ### 5. Testar Badges
+
 1. Preencha qualquer campo
 2. Observe badges aparecendo no topo
 3. Mude opções
@@ -207,6 +228,7 @@ chrome://extensions/ → ↻ Recarregar
 ## 📱 Screenshots Esperadas
 
 **Light Mode:**
+
 ```
 ┌─────────────────────────────┐
 │ ✨ Criar ETP    [☀️ Toggle] │
@@ -228,6 +250,7 @@ chrome://extensions/ → ↻ Recarregar
 ```
 
 **Dark Mode:**
+
 ```
 ┌─────────────────────────────┐
 │ ✨ Criar ETP    [🌙 Toggle] │
@@ -243,6 +266,7 @@ chrome://extensions/ → ↻ Recarregar
 ## ✅ Checklist de Funcionalidades
 
 ### Dark Mode
+
 - [x] Detecção automática
 - [x] Toggle manual
 - [x] Ícone animado
@@ -250,6 +274,7 @@ chrome://extensions/ → ↻ Recarregar
 - [x] Listener de sistema
 
 ### Histórico
+
 - [x] Salvar automático
 - [x] Listar últimos 5
 - [x] Click para carregar
@@ -257,18 +282,21 @@ chrome://extensions/ → ↻ Recarregar
 - [x] Animação hover
 
 ### Badges
+
 - [x] Atualização automática
 - [x] Todas as opções
 - [x] Design moderno
 - [x] Ícones SVG
 
 ### Progress Bar
+
 - [x] Animação gradiente
 - [x] 6 etapas
 - [x] Auto-show/hide
 - [x] Feedback visual
 
 ### Ícones SVG
+
 - [x] Descrição
 - [x] Parágrafos
 - [x] Tabular
@@ -277,6 +305,7 @@ chrome://extensions/ → ↻ Recarregar
 - [x] Histórico
 
 ### Animações
+
 - [x] Success pulse
 - [x] Smooth scroll
 - [x] Hover effects
@@ -289,13 +318,13 @@ chrome://extensions/ → ↻ Recarregar
 
 **Nota Geral: 10/10** ⭐⭐⭐⭐⭐
 
-| Aspecto | Nota |
-|---------|------|
-| **Design** | 10/10 |
-| **UX** | 10/10 |
-| **Performance** | 10/10 |
+| Aspecto             | Nota  |
+| ------------------- | ----- |
+| **Design**          | 10/10 |
+| **UX**              | 10/10 |
+| **Performance**     | 10/10 |
 | **Funcionalidades** | 10/10 |
-| **Código** | 10/10 |
+| **Código**          | 10/10 |
 
 ---
 
@@ -318,6 +347,7 @@ Novas animações: 7
 ## 🎊 **TUDO IMPLEMENTADO!**
 
 Todas as sugestões foram implementadas:
+
 - ✅ Cores personalizadas
 - ✅ Ícones SVG
 - ✅ Modo escuro (auto + toggle)
@@ -329,4 +359,3 @@ Todas as sugestões foram implementadas:
 - ✅ E muito mais!
 
 **A extensão agora é de nível PROFISSIONAL!** 🚀
-
