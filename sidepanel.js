@@ -325,8 +325,39 @@ const Historico = {
             conteudo = textoCompleto.substring(posFimTitulo).trim();
           }
         } else {
-          // Última seção (XIII)
-          conteudo = textoCompleto.substring(posFimTitulo).trim();
+          // Última seção (XIII) - procura por marcadores de fim
+          let conteudoCompleto = textoCompleto.substring(posFimTitulo).trim();
+          
+          // Procura por marcadores que indicam fim do ETP
+          const marcadoresFim = [
+            /^ESTUDO TÉCNICO PRELIMINAR/i,
+            /^AQUISIÇÃO DE/i,
+            /^CONTRATAÇÃO DE/i,
+            /^AQUISIÇÃO DE/i,
+            /^ESTUDO TÉCNICO/i,
+            /^ETP/i,
+            /^ESTUDO PRELIMINAR/i
+          ];
+          
+          let posFimMarcador = conteudoCompleto.length;
+          
+          for (const marcador of marcadoresFim) {
+            const matchMarcador = conteudoCompleto.match(marcador);
+            if (matchMarcador) {
+              const posMarcador = conteudoCompleto.indexOf(matchMarcador[0]);
+              if (posMarcador > 0 && posMarcador < posFimMarcador) {
+                posFimMarcador = posMarcador;
+              }
+            }
+          }
+          
+          // Se encontrou marcador, corta o conteúdo
+          if (posFimMarcador < conteudoCompleto.length) {
+            conteudo = conteudoCompleto.substring(0, posFimMarcador).trim();
+            console.log(`  🔚 Seção XIII cortada no marcador (${posFimMarcador} chars)`);
+          } else {
+            conteudo = conteudoCompleto;
+          }
         }
 
         // Remove possíveis linhas vazias do início e fim
@@ -1450,7 +1481,7 @@ const WelcomeSystem = {
   showWelcomeModal() {
     const content = `
       <h1><span>🎉</span> Bem-vindo ao Criar ETP com ChatGPT!</h1>
-      <span class="welcome-version">v2.0</span>
+      <span class="welcome-version">v2.</span>
       
       <p>Obrigado por instalar nossa extensão! Agora você pode criar Estudos Técnicos Preliminares de forma rápida e eficiente.</p>
       
@@ -1491,13 +1522,11 @@ const WelcomeSystem = {
       
       <h2>✨ Novidades da v2.0</h2>
       <ul>
-        <li><strong>Interface Redesenhada:</strong> Design moderno com cores turquesa e amarelo</li>
-        <li><strong>Radio Buttons Animados:</strong> Nova experiência visual com animações suaves</li>
-        <li><strong>Botões com Alto Contraste:</strong> Melhor legibilidade (amarelo → azul no hover)</li>
-        <li><strong>Background Uniforme:</strong> Cores sólidas sem gradiente (melhor performance)</li>
-        <li><strong>Textarea Auto-resize:</strong> Ajuste automático corrigido ao carregar histórico</li>
-        <li><strong>Footer Profissional:</strong> Card elegante com versão e links sociais</li>
-        <li><strong>Modal de Boas-vindas:</strong> Sistema de notificações para novos usuários</li>
+        <li><strong>Side Panel Integrado:</strong> Interface lateral que permite visualizar a extensão e o ChatGPT simultaneamente</li>
+        <li><strong>13 Seções Completas:</strong> Gera todas as seções obrigatórias do ETP automaticamente</li>
+        <li><strong>Modo Escuro:</strong> Tema claro/escuro automático com toggle manual</li>
+        <li><strong>Histórico Inteligente:</strong> Salva os ETPs com respostas organizadas por seção</li>
+        <li><strong>Interface Redesenhada:</strong> Design moderno e elegante</li>
       </ul>
       
       <h2>🐛 Correções</h2>
