@@ -1433,8 +1433,13 @@ const EventHandlers = {
 // ========================================
 const WelcomeSystem = {
   async init() {
-    const result = await chrome.storage.local.get(['showWelcome', 'showWhatsNew', 'version', 'previousVersion']);
-    
+    const result = await chrome.storage.local.get([
+      'showWelcome',
+      'showWhatsNew',
+      'version',
+      'previousVersion',
+    ]);
+
     if (result.showWelcome) {
       this.showWelcomeModal();
     } else if (result.showWhatsNew) {
@@ -1445,7 +1450,7 @@ const WelcomeSystem = {
   showWelcomeModal() {
     const content = `
       <h1><span>🎉</span> Bem-vindo ao Criar ETP com ChatGPT!</h1>
-      <span class="welcome-version">v2.1</span>
+      <span class="welcome-version">v2.0</span>
       
       <p>Obrigado por instalar nossa extensão! Agora você pode criar Estudos Técnicos Preliminares de forma rápida e eficiente.</p>
       
@@ -1472,7 +1477,7 @@ const WelcomeSystem = {
         <button class="welcome-btn welcome-btn-primary" id="btnGetStarted">Começar Agora</button>
       </div>
     `;
-    
+
     this.showModal(content);
     chrome.storage.local.remove('showWelcome');
   },
@@ -1484,7 +1489,7 @@ const WelcomeSystem = {
       
       <p>A extensão foi atualizada com melhorias e novos recursos!</p>
       
-      <h2>✨ Novidades da v2.1</h2>
+      <h2>✨ Novidades da v2.0</h2>
       <ul>
         <li><strong>Interface Redesenhada:</strong> Design moderno com cores turquesa e amarelo</li>
         <li><strong>Radio Buttons Animados:</strong> Nova experiência visual com animações suaves</li>
@@ -1507,7 +1512,7 @@ const WelcomeSystem = {
         <button class="welcome-btn welcome-btn-primary" id="btnGetStarted">Testar Agora</button>
       </div>
     `;
-    
+
     this.showModal(content);
     chrome.storage.local.remove('showWhatsNew');
   },
@@ -1515,24 +1520,24 @@ const WelcomeSystem = {
   showModal(htmlContent) {
     const modal = document.getElementById('welcomeModal');
     const contentDiv = document.getElementById('welcomeContent');
-    
+
     contentDiv.innerHTML = htmlContent;
     modal.style.display = 'flex';
-    
+
     // Event listeners para fechar
     const closeBtn = document.getElementById('closeWelcome');
     const btnClose = document.getElementById('btnCloseWelcome');
     const btnGetStarted = document.getElementById('btnGetStarted');
     const overlay = modal.querySelector('.welcome-modal-overlay');
-    
+
     const closeModal = () => {
       modal.style.display = 'none';
     };
-    
+
     closeBtn.addEventListener('click', closeModal);
     btnClose.addEventListener('click', closeModal);
     overlay.addEventListener('click', closeModal);
-    
+
     btnGetStarted.addEventListener('click', () => {
       closeModal();
       // Foca no campo de contexto
@@ -1541,7 +1546,7 @@ const WelcomeSystem = {
         contextoField.focus();
       }
     });
-  }
+  },
 };
 
 // ========================================

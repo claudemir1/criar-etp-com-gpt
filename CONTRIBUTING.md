@@ -66,7 +66,7 @@ Se aplicável, adicione screenshots.
 **Ambiente:**
 - SO: [ex: Windows 11]
 - Navegador: [ex: Chrome 120]
-- Versão da Extensão: [ex: 2.1]
+- Versão da Extensão: [ex: 2.0]
 
 **Contexto Adicional**
 Qualquer outra informação relevante.

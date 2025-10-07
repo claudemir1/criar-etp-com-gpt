@@ -1,7 +1,7 @@
 # 📝 Criar ETP com ChatGPT
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-2.1-blue.svg)](https://github.com/claudemir1/criar-etp-com-gpt)
+[![Version](https://img.shields.io/badge/version-2.0-blue.svg)](https://github.com/claudemir1/criar-etp-com-gpt)
 [![Chrome Web Store](https://img.shields.io/badge/chrome-extension-blue.svg)](https://chrome.google.com/webstore)
 
 > Extensão para Google Chrome que automatiza a criação de Estudos Técnicos Preliminares (ETP) utilizando ChatGPT, seguindo as diretrizes da Instrução Normativa SGD/MGI nº 98/2023.
@@ -128,7 +128,7 @@ cd criar-etp-com-gpt
 
 ## 📚 Documentação Adicional
 
-- **[CHANGELOG.md](CHANGELOG-v2.1.md)** - Histórico de versões e alterações
+- **[CHANGELOG.md](CHANGELOG-v2.0.md)** - Histórico de versões e alterações
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** - Guia para contribuidores
 - **[DEBUG_GUIDE.md](DEBUG_GUIDE.md)** - Guia de depuração
 - **[GUIA_TESTE.md](GUIA_TESTE.md)** - Manual de testes
@@ -184,15 +184,12 @@ Encontrou um bug? Por favor, [abra uma issue](https://github.com/claudemir1/cria
 
 ### Versão 2.2 (Planejado)
 
-- [ ] Exportar ETP para PDF
 - [ ] Exportar ETP para Word (.docx)
-- [ ] Templates customizáveis
 - [ ] Sincronização entre dispositivos
 
 ### Versão 3.0 (Futuro)
 
-- [ ] Suporte para outros idiomas
-- [ ] Integração com Google Drive
+- [ ] Desenvolvimento do TRP (termo de referencia preliminar)
 - [ ] Modo colaborativo
 - [ ] Análise de qualidade do ETP
 
@@ -200,7 +197,7 @@ Encontrou um bug? Por favor, [abra uma issue](https://github.com/claudemir1/cria
 
 - **Linhas de código**: ~3,500
 - **Arquivos**: 20+
-- **Versão atual**: 2.1
+- **Versão atual**: 2.0
 - **Última atualização**: Outubro 2025
 
 ## 📄 Licença

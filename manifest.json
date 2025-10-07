@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Criar ETP com ChatGPT",
-  "version": "2.1",
+  "version": "2.0",
   "description": "Extensão para criação de Estudos Técnicos Preliminares (ETP), automatizando a redação e oferecendo sugestões de texto com ChatGPT.",
   "author": "Claudemir Andrade",
   "homepage_url": "https://github.com/claudemir1/criar-etp-com-gpt",
