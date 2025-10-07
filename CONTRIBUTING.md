@@ -1,6 +1,6 @@
 # 🤝 Guia de Contribuição
 
-Obrigado por considerar contribuir com o projeto **Criar ETP com ChatGPT**! 
+Obrigado por considerar contribuir com o projeto **Criar ETP com ChatGPT**!
 
 Este documento fornece diretrizes para contribuir com o projeto de forma eficiente e organizada.
 
@@ -38,6 +38,7 @@ Este projeto adota um código de conduta que esperamos que todos os participante
 ### 1. Reportar Bugs
 
 Antes de reportar um bug:
+
 - ✅ Verifique se já não existe uma issue similar
 - ✅ Use a versão mais recente da extensão
 - ✅ Colete informações detalhadas
@@ -49,6 +50,7 @@ Antes de reportar um bug:
 Uma descrição clara e concisa do bug.
 
 **Passos para Reproduzir**
+
 1. Vá para '...'
 2. Clique em '...'
 3. Role até '...'
@@ -64,9 +66,10 @@ O que realmente aconteceu.
 Se aplicável, adicione screenshots.
 
 **Ambiente:**
+
 - SO: [ex: Windows 11]
 - Navegador: [ex: Chrome 120]
-- Versão da Extensão: [ex: 2.0]
+- Versão da Extensão: [ex: 2.0 - Nova Ordem das Seções]
 
 **Contexto Adicional**
 Qualquer outra informação relevante.
@@ -109,17 +112,20 @@ Screenshots, mockups, exemplos, etc.
 ### Setup do Ambiente
 
 1. **Fork o repositório**
+
    ```bash
    # Clique em "Fork" no GitHub
    ```
 
 2. **Clone seu fork**
+
    ```bash
    git clone https://github.com/SEU-USUARIO/criar-etp-com-gpt.git
    cd criar-etp-com-gpt
    ```
 
 3. **Configure o remote upstream**
+
    ```bash
    git remote add upstream https://github.com/claudemir1/criar-etp-com-gpt.git
    ```
@@ -133,28 +139,33 @@ Screenshots, mockups, exemplos, etc.
 ### Workflow de Desenvolvimento
 
 1. **Crie uma branch**
+
    ```bash
    git checkout -b feature/minha-nova-feature
    ```
 
 2. **Faça suas alterações**
+
    - Escreva código limpo e comentado
    - Siga os padrões do projeto
    - Teste suas mudanças
 
 3. **Commit suas mudanças**
+
    ```bash
    git add .
    git commit -m "feat: adiciona nova funcionalidade X"
    ```
 
 4. **Mantenha seu fork atualizado**
+
    ```bash
    git fetch upstream
    git rebase upstream/master
    ```
 
 5. **Push para seu fork**
+
    ```bash
    git push origin feature/minha-nova-feature
    ```
@@ -167,15 +178,18 @@ Screenshots, mockups, exemplos, etc.
 
 ```javascript
 // ✅ BOM
-const getUserName = (user) => {
+const getUserName = user => {
   return user.name || 'Anônimo';
 };
 
 // ❌ RUIM
-function a(u){return u.n||'a'}
+function a(u) {
+  return u.n || 'a';
+}
 ```
 
 **Diretrizes:**
+
 - Use `const` e `let`, não `var`
 - Use arrow functions quando apropriado
 - Comente código complexo
@@ -193,10 +207,14 @@ function a(u){return u.n||'a'}
 }
 
 /* ❌ RUIM */
-.btn{background:#1094ab;padding:12px 24px;}
+.btn {
+  background: #1094ab;
+  padding: 12px 24px;
+}
 ```
 
 **Diretrizes:**
+
 - Use variáveis CSS
 - Nomes de classe descritivos (kebab-case)
 - Agrupe propriedades relacionadas
@@ -216,6 +234,7 @@ function a(u){return u.n||'a'}
 ```
 
 **Diretrizes:**
+
 - Use tags semânticas
 - Inclua atributos de acessibilidade
 - Indentação consistente (2 espaços)
@@ -284,9 +303,11 @@ git commit -m "refactor(storage): simplifica lógica de salvamento"
 
 ```markdown
 ## Descrição
+
 Breve descrição das mudanças.
 
 ## Tipo de Mudança
+
 - [ ] 🐛 Bug fix
 - [ ] ✨ Nova funcionalidade
 - [ ] 💥 Breaking change
@@ -294,14 +315,17 @@ Breve descrição das mudanças.
 - [ ] 🎨 Estilo/UI
 
 ## Como Testar
+
 1. Passo 1
 2. Passo 2
 3. Resultado esperado
 
 ## Screenshots (se aplicável)
+
 Cole screenshots aqui.
 
 ## Checklist
+
 - [ ] Código testado localmente
 - [ ] Documentação atualizada
 - [ ] Sem erros no console
@@ -336,21 +360,25 @@ git push origin --delete feature/minha-feature
 Contribuições são especialmente bem-vindas em:
 
 1. **🧪 Testes Automatizados**
+
    - Configurar Jest
    - Criar testes unitários
    - Testes de integração
 
 2. **♿ Acessibilidade**
+
    - ARIA labels
    - Navegação por teclado
    - Screen reader support
 
 3. **🌍 Internacionalização**
+
    - Suporte para inglês
    - Suporte para espanhol
    - Sistema de i18n
 
 4. **📱 Responsividade**
+
    - Otimizar para diferentes resoluções
    - Melhorar layout em telas pequenas
 
@@ -378,4 +406,3 @@ Sua contribuição faz a diferença! Todo feedback, código, documentação ou a
 **[← Voltar ao README](README.md)**
 
 </div>
-

@@ -104,6 +104,7 @@ const Historico = {
         tabular: item.tabular,
         previsao: item.previsao,
         locacao: item.locacao,
+        etpVersion: item.etpVersion || 'nova', // Versão do ETP usada
         date: new Date().toISOString(),
         resposta: item.resposta || null, // Resposta do ChatGPT
         secoes: item.secoes || null, // Seções parseadas
@@ -327,36 +328,116 @@ const Historico = {
         } else {
           // Última seção (XIII) - procura por marcadores de fim
           let conteudoCompleto = textoCompleto.substring(posFimTitulo).trim();
-          
-          // Procura por marcadores que indicam fim do ETP
+
+          console.log('🔍 Analisando conteúdo da seção XIII:');
+          console.log('📏 Tamanho total:', conteudoCompleto.length);
+          console.log(
+            '📝 Primeiros 200 chars:',
+            conteudoCompleto.substring(0, 200)
+          );
+
+          // Procura por marcadores que indicam fim do ETP (mais específicos)
           const marcadoresFim = [
             /^ESTUDO TÉCNICO PRELIMINAR/i,
             /^AQUISIÇÃO DE/i,
             /^CONTRATAÇÃO DE/i,
-            /^AQUISIÇÃO DE/i,
             /^ESTUDO TÉCNICO/i,
             /^ETP/i,
-            /^ESTUDO PRELIMINAR/i
+            /^ESTUDO PRELIMINAR/i,
+            // Adiciona mais padrões comuns
+            /^ESTUDO TÉCNICO PRELIMINAR \(ETP\)/i,
+            /^AQUISIÇÃO DE \d+/i,
+            /^CONTRATAÇÃO DE \d+/i,
+            // Procura por quebras de linha seguidas de títulos
+            /\n\nESTUDO TÉCNICO PRELIMINAR/i,
+            /\n\nAQUISIÇÃO DE/i,
+            /\n\nCONTRATAÇÃO DE/i,
+            /\n\nESTUDO TÉCNICO/i,
+            /\n\nETP/i,
+            /\n\nESTUDO PRELIMINAR/i,
+            // RODAPÉ DO CHATGPT - Remove a pergunta sobre formatação
+            /Deseja que eu formate este ETP em documento oficial/i,
+            /Deseja que eu formate/i,
+            /documento oficial \(DOCX ou PDF\)/i,
+            /conforme padrão da Administração Pública/i,
+            /Posso gerar o arquivo automaticamente/i,
+            /\+ Pergunte alguma coisa/i,
+            /Pergunte alguma coisa/i,
+            // Outros possíveis rodapés
+            /^Deseja que/i,
+            /^Posso gerar/i,
+            /^Conforme padrão/i,
+            /^Administração Pública/i,
           ];
-          
+
           let posFimMarcador = conteudoCompleto.length;
-          
+          let marcadorEncontrado = null;
+
           for (const marcador of marcadoresFim) {
             const matchMarcador = conteudoCompleto.match(marcador);
             if (matchMarcador) {
               const posMarcador = conteudoCompleto.indexOf(matchMarcador[0]);
+              console.log(
+                `🎯 Marcador encontrado: "${matchMarcador[0]}" na posição ${posMarcador}`
+              );
               if (posMarcador > 0 && posMarcador < posFimMarcador) {
                 posFimMarcador = posMarcador;
+                marcadorEncontrado = matchMarcador[0];
               }
             }
           }
-          
+
           // Se encontrou marcador, corta o conteúdo
           if (posFimMarcador < conteudoCompleto.length) {
             conteudo = conteudoCompleto.substring(0, posFimMarcador).trim();
-            console.log(`  🔚 Seção XIII cortada no marcador (${posFimMarcador} chars)`);
+            console.log(
+              `🔚 Seção XIII cortada no marcador "${marcadorEncontrado}" (${posFimMarcador} chars)`
+            );
+            console.log(
+              '📝 Conteúdo final da XIII:',
+              conteudo.substring(0, 100) + '...'
+            );
           } else {
-            conteudo = conteudoCompleto;
+            // Fallback: procura por padrões de fim mais genéricos
+            console.log(
+              '⚠️ Nenhum marcador específico encontrado, procurando padrões genéricos...'
+            );
+
+            // Procura por quebras de linha duplas seguidas de texto que parece título
+            const padroesFim = [
+              /\n\n[A-Z][A-Z\s]+[A-Z]/g, // Títulos em maiúscula
+              /\n\n[A-Z][a-z]+ [A-Z][a-z]+/g, // Títulos com palavras
+              /\n\n\d+\./g, // Numeração
+              /\n\n[A-Z][A-Z\s]*$/gm, // Linhas só com maiúsculas
+            ];
+
+            for (const padrao of padroesFim) {
+              const matches = [...conteudoCompleto.matchAll(padrao)];
+              for (const match of matches) {
+                const pos = match.index;
+                if (pos > 100 && pos < posFimMarcador) {
+                  // Evita cortar muito cedo
+                  posFimMarcador = pos;
+                  console.log(
+                    `🎯 Padrão genérico encontrado: "${match[0]}" na posição ${pos}`
+                  );
+                  break;
+                }
+              }
+              if (posFimMarcador < conteudoCompleto.length) break;
+            }
+
+            if (posFimMarcador < conteudoCompleto.length) {
+              conteudo = conteudoCompleto.substring(0, posFimMarcador).trim();
+              console.log(
+                `🔚 Seção XIII cortada por padrão genérico (${posFimMarcador} chars)`
+              );
+            } else {
+              conteudo = conteudoCompleto;
+              console.log(
+                '⚠️ Nenhum padrão de fim encontrado, mantendo conteúdo completo'
+              );
+            }
           }
         }
 
@@ -410,13 +491,21 @@ const Historico = {
 
         const temResposta = item.secoes && Object.keys(item.secoes).length > 0;
 
+        // Determina o texto da versão
+        const versionText =
+          item.etpVersion === 'nova' ? 'Nova Ordem' : 'Versão Antiga';
+        const versionIcon = item.etpVersion === 'nova' ? '🆕' : '🔄';
+
         return `
         <div class="historico-item-wrapper">
           <div class="historico-item" data-index="${index}">
             <div class="historico-item-header">
               <div class="historico-item-info">
                 <div class="historico-item-desc">${preview}</div>
-                <div class="historico-item-date">📅 ${dateStr}</div>
+                <div class="historico-item-meta">
+                  <div class="historico-item-date">📅 ${dateStr}</div>
+                  <div class="historico-item-version">${versionIcon} ${versionText}</div>
+                </div>
               </div>
               <button class="btn-excluir-etp" data-index="${index}" title="Excluir ETP">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
@@ -739,6 +828,12 @@ const Historico = {
       `input[name="locacao"][value="${config.locacao}"]`
     ).checked = true;
 
+    // Configura a versão do ETP
+    const etpVersionSelect = document.getElementById('etpVersion');
+    if (etpVersionSelect && config.etpVersion) {
+      etpVersionSelect.value = config.etpVersion;
+    }
+
     // Auto-resize do textarea após carregar (com delay para garantir CSS aplicado)
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
@@ -867,48 +962,22 @@ const Utils = {
     const previsaoText =
       previsao === 'sim' ? 'está prevista' : 'não está prevista';
 
-    return `Atue como demandante de área técnica de autarquia pública estadual, especialista na elaboração do estudo técnico preliminar (ETP).
+    // Obtém a versão selecionada do ETP
+    const etpVersion = document.getElementById('etpVersion').value;
 
-O estudo técnico preliminar (ETP) é documento constitutivo da primeira etapa do planejamento de uma contratação pública que caracteriza o interesse público envolvido, conforme previsto na lei nº 14.133/21 e no Decreto Estadual n° 68.185, de 11 de dezembro de 2023, do governo do estado de São Paulo.
+    // Escolhe o template baseado na versão selecionada
+    const template =
+      etpVersion === 'nova'
+        ? EtpConfig.ETP_PROMPT_TEMPLATE_NOVA
+        : EtpConfig.ETP_PROMPT_TEMPLATE;
 
-A sua tarefa é redigir, para cada seção do ETP delimitada por #, o que se pede em seguida, considerando o seguinte contexto: ${contexto}.
-
-Mantenha coerência e alinhamento entre as seções do ETP. Demonstre concisão, clareza e perícia redacional.
-
-Considere que a contratação ${previsaoText} no plano de contratações anual.
-
-Utilize fontes distintas para destacar os incisos e inclua um título para o ETP.
-
-Elabore, em até ${paragr} parágrafos, as descrições solicitadas em cada seção, considerado o problema a ser resolvido ou necessidade a ser atendida, sob a perspectiva do interesse público.
-${complemento}
-
-*Acrescente, na Seção V, uma comparação entre compra ${locacaoText}, avaliando qual alternativa oferece maior vantagem financeira. Caso haja outra opção além da compra ${locacaoText}, descreva-a detalhadamente. Com base na pesquisa de mercado ofereça sugestão do material ou serviço a ser contrato*
-
-#I - descrição da necessidade da contratação, considerado o problema a ser resolvido sob a perspectiva do interesse público;#
-
-#II - demonstração da previsão da contratação no plano de contratações anual, sempre que elaborado, de modo a indicar o seu alinhamento com o planejamento da Administração;#
-
-#III - requisitos da contratação;#
-
-#IV - estimativas das quantidades para a contratação, acompanhadas das memórias de cálculo e dos documentos que lhes dão suporte, que considerem interdependências com outras contratações, de modo a possibilitar economia de escala;#
-
-#V - levantamento de mercado, que consiste na análise das alternativas possíveis, e justificativa técnica e econômica da escolha do tipo de solução a contratar;#
-
-#VI - estimativa do valor da contratação, acompanhada dos preços unitários referenciais, das memórias de cálculo e dos documentos que lhe dão suporte, que poderão constar de anexo classificado, se a Administração optar por preservar o seu sigilo até a conclusão da licitação;#
-
-#VII - descrição da solução como um todo, inclusive das exigências relacionadas à manutenção e à assistência técnica, quando for o caso;#
-
-#VIII - justificativas para o parcelamento ou não da contratação;#
-
-#IX - demonstrativo dos resultados pretendidos em termos de economicidade e de melhor aproveitamento dos recursos humanos, materiais e financeiros disponíveis;#
-
-#X - providências a serem adotadas pela Administração previamente à celebração do contrato, inclusive quanto à capacitação de servidores ou de empregados para fiscalização e gestão contratual;#
-
-#XI - contratações correlatas e/ou interdependentes;#
-
-#XII - descrição de possíveis impactos ambientais e respectivas medidas mitigadoras, incluídos requisitos de baixo consumo de energia e de outros recursos, bem como logística reversa para desfazimento e reciclagem de bens e refugos, quando aplicável;#
-
-#XIII - posicionamento conclusivo sobre a adequação da contratação para o atendimento da necessidade a que se destina.#`;
+    // Usa o template do arquivo de configuração com substituição de variáveis
+    return template
+      .replace('{{CONTEXTO}}', contexto)
+      .replace('{{PREVISAO_TEXT}}', previsaoText)
+      .replace('{{PARAGRAFOS}}', paragr)
+      .replace('{{COMPLEMENTO}}', complemento)
+      .replace('{{LOCACAO_TEXT}}', locacaoText);
   },
 };
 
@@ -1259,6 +1328,17 @@ const EventHandlers = {
       });
     }
 
+    // Seletor de Versão do ETP
+    const etpVersionSelect = document.getElementById('etpVersion');
+    if (etpVersionSelect) {
+      // Carrega versão salva
+      loadEtpVersion();
+
+      etpVersionSelect.addEventListener('change', e => {
+        saveEtpVersion(e.target.value);
+      });
+    }
+
     // Campo de contexto
     const contextoField = document.getElementById('contexto');
     if (contextoField) {
@@ -1341,6 +1421,9 @@ const EventHandlers = {
         'input[name="locacao"]:checked'
       ).value;
 
+      // Obtém a versão do ETP selecionada
+      const etpVersion = document.getElementById('etpVersion').value;
+
       // Salva configuração atual
       const config = {
         contexto,
@@ -1348,6 +1431,7 @@ const EventHandlers = {
         tabular,
         previsao,
         locacao,
+        etpVersion,
       };
 
       // Gera o prompt
@@ -1485,14 +1569,15 @@ const WelcomeSystem = {
       
       <p>Obrigado por instalar nossa extensão! Agora você pode criar Estudos Técnicos Preliminares de forma rápida e eficiente.</p>
       
-      <h2>✨ Principais Funcionalidades</h2>
-      <ul>
-        <li><strong>Side Panel Integrado:</strong> Interface lateral que permite visualizar a extensão e o ChatGPT simultaneamente</li>
-        <li><strong>13 Seções Completas:</strong> Gera todas as seções obrigatórias do ETP automaticamente</li>
-        <li><strong>Histórico Inteligente:</strong> Salva os últimos 5 ETPs com respostas organizadas por seção</li>
-        <li><strong>Modo Escuro:</strong> Tema claro/escuro automático com toggle manual</li>
-        <li><strong>Copiar por Seção:</strong> Copie cada seção individualmente ou o documento completo</li>
-      </ul>
+        <h2>✨ Principais Funcionalidades</h2>
+        <ul>
+          <li><strong>Side Panel Integrado:</strong> Interface lateral que permite visualizar a extensão e o ChatGPT simultaneamente</li>
+          <li><strong>13 Seções Completas:</strong> Gera todas as seções obrigatórias do ETP automaticamente</li>
+          <li><strong>Nova Ordem das Seções:</strong> Escolha entre a versão antiga (Lei Federal 14.133/21) ou a nova ordem (Decreto Estadual 68.017/23)</li>
+          <li><strong>Histórico Inteligente:</strong> Salva os últimos 5 ETPs com respostas organizadas por seção</li>
+          <li><strong>Modo Escuro:</strong> Tema claro/escuro automático com toggle manual</li>
+          <li><strong>Copiar por Seção:</strong> Copie cada seção individualmente ou o documento completo</li>
+        </ul>
       
       <h2>🚀 Como Começar</h2>
       <ul>
@@ -1524,6 +1609,7 @@ const WelcomeSystem = {
       <ul>
         <li><strong>Side Panel Integrado:</strong> Interface lateral que permite visualizar a extensão e o ChatGPT simultaneamente</li>
         <li><strong>13 Seções Completas:</strong> Gera todas as seções obrigatórias do ETP automaticamente</li>
+        <li><strong>Nova Ordem das Seções:</strong> Escolha entre versão antiga (Lei Federal 14.133/21) ou nova ordem (Decreto Estadual 68.017/23)</li>
         <li><strong>Modo Escuro:</strong> Tema claro/escuro automático com toggle manual</li>
         <li><strong>Histórico Inteligente:</strong> Salva os ETPs com respostas organizadas por seção</li>
         <li><strong>Interface Redesenhada:</strong> Design moderno e elegante</li>
@@ -1577,6 +1663,36 @@ const WelcomeSystem = {
     });
   },
 };
+
+// ========================================
+// FUNÇÕES DE VERSÃO DO ETP
+// ========================================
+
+/**
+ * Salva a versão do ETP selecionada
+ */
+async function saveEtpVersion(version) {
+  try {
+    await chrome.storage.local.set({ etpVersion: version });
+  } catch (error) {
+    console.error('Erro ao salvar versão do ETP:', error);
+  }
+}
+
+/**
+ * Carrega a versão do ETP salva
+ */
+async function loadEtpVersion() {
+  try {
+    const result = await chrome.storage.local.get(['etpVersion']);
+    const etpVersionSelect = document.getElementById('etpVersion');
+    if (etpVersionSelect && result.etpVersion) {
+      etpVersionSelect.value = result.etpVersion;
+    }
+  } catch (error) {
+    console.error('Erro ao carregar versão do ETP:', error);
+  }
+}
 
 // ========================================
 // INICIALIZAÇÃO

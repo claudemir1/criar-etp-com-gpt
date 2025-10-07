@@ -244,6 +244,45 @@ button:disabled {
   display: inline-flex;
 }
 
+/* Seletor de Versão do ETP */
+.etp-version-selector {
+  margin-bottom: 20px;
+  padding: 16px;
+  background: var(--bg-card);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.etp-version-selector label {
+  display: block;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.etp-version-selector select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--input-bg);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.etp-version-selector select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(16, 148, 171, 0.1);
+}
+
+.etp-version-selector select:hover {
+  border-color: var(--secondary);
+}
+
 .radio-group {
   display: flex;
   flex-wrap: nowrap;
@@ -625,9 +664,27 @@ body.dark-mode #limpar {
   line-height: 1.4;
 }
 
+.historico-item-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 4px;
+}
+
 .historico-item-date {
   font-size: 0.7rem;
   color: var(--text-secondary);
+}
+
+.historico-item-version {
+  font-size: 0.65rem;
+  color: var(--primary);
+  font-weight: 600;
+  background: rgba(16, 148, 171, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-block;
+  width: fit-content;
 }
 
 .btn-excluir-etp {

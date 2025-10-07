@@ -20,12 +20,6 @@
       </div>
     </div>
 
-    <!-- Status de processamento -->
-    <div id="status-container" class="status-container hidden">
-      <div class="spinner"></div>
-      <span id="status-text">Processando...</span>
-    </div>
-
     <!-- Campo de Contexto -->
     <label for="contexto">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -107,10 +101,25 @@
       <label> <input type="radio" name="locacao" value="não" /> Não </label>
     </div>
 
+    <!-- Seletor de Versão do ETP -->
+    <div class="etp-version-selector">
+      <label for="etpVersion">Versão do ETP:</label>
+      <select id="etpVersion">
+        <option value="antiga">Versão Antiga (Lei Federal 14.133/21)</option>
+        <option value="nova" selected>Nova Ordem (Decreto Estadual 68.017/23)</option>
+      </select>
+    </div>
+
     <!-- Botão Gerar ETP -->
     <button id="inserir">
       <span>🚀 Gerar ETP</span>
     </button>
+
+    <!-- Status de processamento -->
+    <div id="status-container" class="status-container hidden">
+      <div class="spinner"></div>
+      <span id="status-text">Processando...</span>
+    </div>
 
     <!-- Histórico de ETPs -->
     <div class="historico-container" id="historicoContainer">
@@ -173,6 +182,7 @@
     </div>
   </div>
 
+  <script src="config.js"></script>
   <script src="sidepanel.js"></script>
 </body>
 

@@ -22,6 +22,7 @@ A ferramenta gera ETPs completos com as 13 seções obrigatórias, conforme a le
 - **📑 Side Panel**: Interface lateral que permite visualizar a extensão e o ChatGPT simultaneamente
 - **🎨 Interface Moderna**: Design elegante com tema claro/escuro automático
 - **📊 13 Seções Completas**: Gera todas as seções obrigatórias do ETP automaticamente
+- **🔄 Nova Ordem das Seções**: Escolha entre versão antiga (Lei Federal 14.133/21) ou nova ordem (Decreto Estadual 68.017/23)
 - **💾 Histórico Inteligente**: Salva os últimos 5 ETPs com respostas completas do ChatGPT
 - **📋 Copiar por Seção**: Copie cada seção individualmente ou o documento completo
 - **🔄 Auto-resize**: Textarea que se ajusta automaticamente ao conteúdo
@@ -29,6 +30,10 @@ A ferramenta gera ETPs completos com as 13 seções obrigatórias, conforme a le
 - **🗑️ Gerenciamento**: Exclua ETPs antigos com confirmação de segurança
 
 ### 📝 Seções do ETP Geradas
+
+A extensão gera automaticamente todas as 13 seções obrigatórias do ETP. Você pode escolher entre duas versões:
+
+**🔄 Versão Antiga (Lei Federal 14.133/21):**
 
 1. Descrição da Necessidade da Contratação
 2. Demonstração da Previsão no PCA
@@ -43,6 +48,22 @@ A ferramenta gera ETPs completos com as 13 seções obrigatórias, conforme a le
 11. Providências a Serem Adotadas
 12. Possíveis Impactos Ambientais
 13. Posicionamento Conclusivo
+
+**🆕 Nova Ordem (Decreto Estadual 68.017/23):**
+
+1. Descrição da Necessidade da Contratação
+2. Descrição dos Requisitos da Contratação (mais detalhada)
+3. Levantamento de Mercado (com opções a, b, c, d)
+4. Descrição da Solução como um Todo
+5. Estimativa das Quantidades (reorganizada)
+6. Estimativa do Valor da Contratação
+7. Justificativas para o Parcelamento (reorganizada)
+8. Contratações Correlatas e/ou Interdependentes
+9. Demonstrativo da Previsão no PCA (reorganizada)
+10. Demonstrativo dos Resultados Pretendidos
+11. Providências a Serem Adotadas (mais detalhada)
+12. Possíveis Impactos Ambientais
+13. Manifestação Conclusiva (reorganizada)
 
 ## 🛠️ Tecnologias Utilizadas
 
