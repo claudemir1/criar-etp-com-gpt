@@ -182,7 +182,7 @@ Encontrou um bug? Por favor, [abra uma issue](https://github.com/claudemir1/cria
 
 ## 💡 Roadmap
 
-### Versão 2.2 (Planejado)
+### Versão 2.1 (Planejado)
 
 - [ ] Exportar ETP para Word (.docx)
 - [ ] Sincronização entre dispositivos
@@ -217,7 +217,7 @@ MIT License - Copyright (c) 2025 Claudemir Andrade
 
 ## 🙏 Agradecimentos
 
-- ChatGPT pela API que torna tudo possível
+- ChatGPT pela API que tornou tudo possível
 - Comunidade open source por compartilhar conhecimento
 - Todos os usuários que testam e fornecem feedback
 
