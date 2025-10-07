@@ -266,8 +266,7 @@ const Historico = {
    * Parseia a resposta em seções
    */
   parseSecoes(textoCompleto) {
-    console.log('🔍 Iniciando parse de seções...');
-    console.log('📏 Tamanho do texto:', textoCompleto.length);
+    // Iniciando parse de seções
 
     const secoes = {};
     const numerosRomanos = [
@@ -1019,8 +1018,7 @@ const ChatGPT = {
     try {
       // Função standalone para injeção (não pode ser método de objeto)
       const injectFunction = function (promptText) {
-        console.log('🚀 ========== INICIANDO INJEÇÃO DO PROMPT ==========');
-        console.log('📝 Tamanho do prompt:', promptText.length, 'caracteres');
+        // Iniciando injeção do prompt
 
         try {
           // ESTRATÉGIA 1: Procura por ID
@@ -1028,13 +1026,13 @@ const ChatGPT = {
 
           // ESTRATÉGIA 2: Procura por seletor alternativo
           if (!promptInput) {
-            console.log('⚠️ Tentando seletor alternativo...');
+            // Tentando seletor alternativo
             promptInput = document.querySelector('[contenteditable="true"]');
           }
 
           // ESTRATÉGIA 3: Procura por placeholder
           if (!promptInput) {
-            console.log('⚠️ Tentando por placeholder...');
+            // Tentando por placeholder
             const elements = document.querySelectorAll(
               '[contenteditable="true"]'
             );
