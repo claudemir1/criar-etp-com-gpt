@@ -16,7 +16,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 });
 
 // Detecta instalação ou atualização
-chrome.runtime.onInstalled.addListener(details => {
+chrome.runtime.onInstalled.addListener(async (details) => {
   const currentVersion = chrome.runtime.getManifest().version;
 
   if (details.reason === 'install') {
@@ -24,24 +24,29 @@ chrome.runtime.onInstalled.addListener(details => {
     console.log('✅ Extensão Criar ETP com ChatGPT instalada com sucesso!');
 
     // Define flag para mostrar modal de boas-vindas
-    chrome.storage.local.set({
+    await chrome.storage.local.set({
       showWelcome: true,
       version: currentVersion,
       installedDate: new Date().toISOString(),
     });
   } else if (details.reason === 'update') {
-    // Atualização
-    const previousVersion = details.previousVersion;
+    // Atualização - busca a versão anterior do storage
+    const stored = await chrome.storage.local.get(['version']);
+    const previousVersion = stored.version || details.previousVersion || '1.0';
+    
     console.log(
       `🔄 Extensão atualizada de ${previousVersion} para ${currentVersion}`
     );
 
-    // Define flag para mostrar modal de novidades
-    chrome.storage.local.set({
-      showWhatsNew: true,
-      version: currentVersion,
-      previousVersion: previousVersion,
-      updatedDate: new Date().toISOString(),
-    });
+    // Só mostra modal se as versões forem diferentes
+    if (previousVersion !== currentVersion) {
+      // Define flag para mostrar modal de novidades
+      await chrome.storage.local.set({
+        showWhatsNew: true,
+        version: currentVersion,
+        previousVersion: previousVersion,
+        updatedDate: new Date().toISOString(),
+      });
+    }
   }
 });
